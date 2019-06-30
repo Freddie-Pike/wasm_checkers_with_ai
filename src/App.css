@@ -1,14 +1,6 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
+.main-container {
+  position: relative;
+  border: 1px solid #111;
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -19,15 +11,29 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.checker-board {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: repeat(8, auto);
+  grid-template-rows: auto;
+  grid-auto-flow: row;
+  align-items: strech;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.checker-board {}
+
+.tile {
+  width: 32px;
+  height: 32px;
+  background-color: red;
+  text-align: center;
+  align-self: center;
+}
+
+.red {
+  background-color: red;
+}
+
+.black {
+  background-color: #111;
 }
