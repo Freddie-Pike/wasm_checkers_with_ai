@@ -17,7 +17,6 @@ function CheckerBoardPattern() {
       }
     }
     return list;
-
   }
 
   return (

@@ -18,16 +18,22 @@
   grid-template-rows: auto;
   grid-auto-flow: row;
   align-items: strech;
+  position: relative;
 }
 
-.checker-board {}
-
 .tile {
-  width: 32px;
-  height: 32px;
-  background-color: red;
+  width: 64px;
+  height: 64px;
   text-align: center;
   align-self: center;
+}
+
+.checker {
+  width: 64px;
+  height: 64px;
+  border: 1px solid white;
+  border-radius: 50%;
+  position: absolute;
 }
 
 .red {
