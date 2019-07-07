@@ -9,8 +9,7 @@ function Checker(props) {
 
   function handleCheckerClick() {
     alert(`x: ${props.x}, y: ${props.y}`);
-    console.log('hey');
-    alert(`2 + 2 = ${window.add(props.x, props.y)}`);
+    alert(`2 + 2 = ${window.multiply(props.x, props.y)}`);
   }
 
   return (

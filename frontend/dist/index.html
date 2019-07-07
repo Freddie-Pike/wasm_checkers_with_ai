@@ -6,12 +6,13 @@
 </head>
 
 <script type="module">
-  import init, { add } from './without/without_a_bundler.js';
+  import init, { add, multiply } from './without/without_a_bundler.js';
 
   async function run() {
     await init();
     const result = add(1, 2);
     window.add = add;
+    window.multiply = multiply;
     console.log(`1 + 2 = ${result}`);
   }
   run();
