@@ -1,6 +1,6 @@
 import React from 'react';
 
-function CheckerList(props) {
+function CheckerBoard(props) {
   return (
     <div className="checker-board">
       {props.children}
@@ -8,4 +8,4 @@ function CheckerList(props) {
   );
 }
 
-export default CheckerList;
+export default CheckerBoard;
