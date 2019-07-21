@@ -29,9 +29,14 @@ function CheckerHighlight(props) {
     }
   }
 
-  return (
-    <div onClick={handleCheckerClick} className={`checker white`} style={style}></div>
-  )
+  if (props.random) {
+    handleCheckerClick();
+    return null;
+  } else {
+    return (
+      <div onClick={handleCheckerClick} className={`checker white`} style={style}></div>
+    )
+  }
 }
 
 CheckerHighlight.propTypes = {

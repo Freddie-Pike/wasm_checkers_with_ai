@@ -1,4 +1,5 @@
 import React, { useState, Fragment } from 'react'
+import _ from 'lodash'
 import CheckerHighlight from './CheckerHighlight';
 import PropTypes from 'prop-types'
 
@@ -17,13 +18,14 @@ function Checker(props) {
   }
 
   if (isHighlighted) {
-    let MoveCoordinates = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
+    let moveCoordinates = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
+    let randomCoordinate = [_.sample(moveCoordinates)];
     return (
       <Fragment>
         <div onClick={handleCheckerClick} className={`checker ${props.color}`} style={style}></div>
         {
-          MoveCoordinates.map((moveCoordinate, i) => {
-            return <CheckerHighlight key={v4()} color={props.color} oldX={props.x} oldY={props.y} x={moveCoordinate[0] + props.x} y={moveCoordinate[1] + props.y} />
+          randomCoordinate.map((moveCoordinate, i) => {
+            return <CheckerHighlight key={v4()} random={true} color={props.color} oldX={props.x} oldY={props.y} x={moveCoordinate[0] + props.x} y={moveCoordinate[1] + props.y} />
           })
         }
       </Fragment>
