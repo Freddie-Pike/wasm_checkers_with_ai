@@ -1,11 +1,11 @@
 import React, { useState, useContext, Fragment } from 'react'
 import _ from 'lodash'
+import PropTypes from 'prop-types'
+import { v4 } from 'uuid'
 
 import { CheckerContext } from '../context';
+import { checkIfOutOfBounds, checkIfMoveIsInCheckerList } from '../helpers';
 import CheckerHighlight from './CheckerHighlight';
-import PropTypes from 'prop-types'
-
-import { v4 } from 'uuid'
 
 function Checker(props) {
   const [isHighlighted, setIsHighlighted] = useState(false);
@@ -53,17 +53,22 @@ function Checker(props) {
               newY += moveCoordinate[1];
             }
 
-            return <CheckerHighlight
-              key={v4()}
-              random={false}
-              color={props.color}
-              oldX={props.x}
-              oldY={props.y}
-              x={newX}
-              y={newY}
-              jumpedCheckerX={jumpedCheckerX}
-              jumpedCheckerY={jumpedCheckerY}
-            />
+            if (checkIfOutOfBounds(newX, newY) &&
+              checkIfMoveIsInCheckerList(newX, newY, redCheckerList) &&
+              checkIfMoveIsInCheckerList(newX, newY, blackCheckerList)) {
+
+              return <CheckerHighlight
+                key={v4()}
+                random={false}
+                color={props.color}
+                oldX={props.x}
+                oldY={props.y}
+                x={newX}
+                y={newY}
+                jumpedCheckerX={jumpedCheckerX}
+                jumpedCheckerY={jumpedCheckerY}
+              />
+            }
           })
         }
       </Fragment>
