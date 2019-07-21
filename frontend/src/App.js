@@ -29,17 +29,20 @@ const BLACK_CHECKER_LIST = [
 // piece on the board. Make it 32 bits if that's faster.
 function App() {
   const [redCheckerList, setRedCheckerList] = useState(RED_CHECKER_LIST);
+  const [blackCheckerList, setBlackCheckerList] = useState(BLACK_CHECKER_LIST);
 
   return (
     <CheckerProvider value={{
       redCheckerList: redCheckerList,
       setRedCheckerList: setRedCheckerList,
+      blackCheckerList: blackCheckerList,
+      setBlackCheckerList: setBlackCheckerList,
     }}>
       <div className="main-container">
         <CheckerBoard>
           <CheckerBoardPattern />
           <CheckerList color="red" coordinates={redCheckerList} />
-          <CheckerList color="black" coordinates={BLACK_CHECKER_LIST} />
+          <CheckerList color="black" coordinates={blackCheckerList} />
         </CheckerBoard>
       </div>
     </CheckerProvider>

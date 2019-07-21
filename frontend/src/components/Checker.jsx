@@ -23,7 +23,7 @@ function Checker(props) {
         <div onClick={handleCheckerClick} className={`checker ${props.color}`} style={style}></div>
         {
           MoveCoordinates.map((moveCoordinate, i) => {
-            return <CheckerHighlight key={v4()} oldX={props.x} oldY={props.y} x={moveCoordinate[0] + props.x} y={moveCoordinate[1] + props.y} />
+            return <CheckerHighlight key={v4()} color={props.color} oldX={props.x} oldY={props.y} x={moveCoordinate[0] + props.x} y={moveCoordinate[1] + props.y} />
           })
         }
       </Fragment>
