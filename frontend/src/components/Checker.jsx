@@ -2,6 +2,8 @@ import React, { useState, Fragment } from 'react'
 import CheckerHighlight from './CheckerHighlight';
 import PropTypes from 'prop-types'
 
+import { v4 } from 'uuid'
+
 function Checker(props) {
   const [isHighlighted, setIsHighlighted] = useState(false);
 
@@ -21,7 +23,7 @@ function Checker(props) {
         <div onClick={handleCheckerClick} className={`checker ${props.color}`} style={style}></div>
         {
           MoveCoordinates.map((moveCoordinate, i) => {
-            return <CheckerHighlight x={moveCoordinate[0] + props.x} y={moveCoordinate[1] + props.y} />
+            return <CheckerHighlight key={v4()} oldX={props.x} oldY={props.y} x={moveCoordinate[0] + props.x} y={moveCoordinate[1] + props.y} />
           })
         }
       </Fragment>

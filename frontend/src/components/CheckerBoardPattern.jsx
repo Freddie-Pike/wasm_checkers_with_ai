@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Tile from './Tile';
+import { v4 } from 'uuid'
 
 function CheckerBoardPattern() {
   function generatePattern() {
@@ -14,7 +15,7 @@ function CheckerBoardPattern() {
       color = color === "red" ? "black" : "red";
       for (j = 0; j < 8; j++) {
         counter += 1;
-        list.push(<Tile key={counter} color={color} />)
+        list.push(<Tile key={v4()} color={color} />)
         color = color === "red" ? "black" : "red";
       }
     }
