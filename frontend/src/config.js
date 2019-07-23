@@ -25,6 +25,36 @@ export const TEST_BLACK_CHECKER_LIST = [
   }
 ]
 
+export const KINGABLE_RED_CHECKER_LIST = [
+  {
+    "x": 0, "y": 0
+  },
+  {
+    "x": 2, "y": 0
+  },
+  {
+    "x": 4, "y": 0
+  },
+  {
+    "x": 6, "y": 0
+  },
+]
+
+export const KINGABLE_BLACK_CHECKER_LIST = [
+  {
+    "x": 1, "y": 7,
+  },
+  {
+    "x": 3, "y": 7,
+  },
+  {
+    "x": 5, "y": 7,
+  },
+  {
+    "x": 7, "y": 7,
+  }
+]
+
 export const KING_MOVE_COORDINATES = [
   [1, 1],
   [-1, 1],
