@@ -1,3 +1,4 @@
+// Test Checker sets.
 export const TEST_RED_CHECKER_LIST = [
   {
     "x": 1, "y": 1, "isKing": true,
@@ -25,6 +26,20 @@ export const TEST_BLACK_CHECKER_LIST = [
   }
 ]
 
+export const RED_ABOUT_TO_WIN_RED_CHECKERS = [
+  {
+    "x": 3, "y": 3, "isKing": true,
+  }
+]
+
+export const RED_ABOUT_TO_WIN_BLACK_CHECKERS = [
+  {
+    "x": 2, "y": 2, "isKing": true,
+  },
+]
+
+
+// Game logic.
 export const KINGABLE_RED_CHECKER_LIST = [
   {
     "x": 0, "y": 0
