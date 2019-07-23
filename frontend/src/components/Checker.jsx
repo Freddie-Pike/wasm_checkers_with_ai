@@ -10,7 +10,7 @@ import { KING_MOVE_COORDINATES, RED_MOVE_COORDINATES, BLACK_MOVE_COORDINATES } f
 
 function Checker(props) {
   const [isHighlighted, setIsHighlighted] = useState(false);
-  let { redCheckerList, blackCheckerList } = useContext(CheckerContext);
+  let { redCheckerList, blackCheckerList, playerTurn } = useContext(CheckerContext);
 
   let style = {
     top: (props.y * 64) + "px",
@@ -90,7 +90,7 @@ function Checker(props) {
       kingClass = 'king-class'
     }
     return (
-      <div onClick={handleCheckerClick} className={`checker ${props.color} ${kingClass}`} style={style}></div>
+      <div onClick={playerTurn === props.color ? handleCheckerClick : null} className={`checker ${props.color} ${kingClass}`} style={style}></div>
     )
   }
 }

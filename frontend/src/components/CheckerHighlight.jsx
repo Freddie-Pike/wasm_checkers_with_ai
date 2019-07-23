@@ -7,7 +7,7 @@ import { KINGABLE_RED_CHECKER_LIST, KINGABLE_BLACK_CHECKER_LIST } from '../confi
 
 
 function CheckerHighlight(props) {
-  let { redCheckerList, setRedCheckerList, blackCheckerList, setBlackCheckerList } = useContext(CheckerContext);
+  let { redCheckerList, setRedCheckerList, blackCheckerList, setBlackCheckerList, playerTurn, setPlayerTurn } = useContext(CheckerContext);
 
   let style = {
     top: (props.y * 64) + "px",
@@ -42,6 +42,7 @@ function CheckerHighlight(props) {
         })
         setBlackCheckerList(blackCheckerList);
       }
+      setPlayerTurn('black');
     } else if (props.color === 'black') {
       blackCheckerList = blackCheckerList.filter((checker) => {
         return !(checker.x === props.oldX & checker.y === props.oldY);
@@ -69,6 +70,7 @@ function CheckerHighlight(props) {
         })
         setRedCheckerList(redCheckerList);
       }
+      setPlayerTurn('red');
     } else {
       throw `props.color is invalid colour, should be red or black. Got ${props.color} instead`
     }

@@ -13,6 +13,7 @@ import CheckerList from './components/CheckerList';
 function App() {
   const [redCheckerList, setRedCheckerList] = useState(TEST_RED_CHECKER_LIST);
   const [blackCheckerList, setBlackCheckerList] = useState(TEST_BLACK_CHECKER_LIST);
+  const [playerTurn, setPlayerTurn] = useState('red');
 
   return (
     <CheckerProvider value={{
@@ -20,6 +21,8 @@ function App() {
       setRedCheckerList: setRedCheckerList,
       blackCheckerList: blackCheckerList,
       setBlackCheckerList: setBlackCheckerList,
+      playerTurn: playerTurn,
+      setPlayerTurn: setPlayerTurn,
     }}>
       <div className="main-container">
         <CheckerBoard>
