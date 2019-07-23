@@ -18,7 +18,7 @@ function CheckerHighlight(props) {
       redCheckerList = redCheckerList.filter((checker) => {
         return !(checker.x === props.oldX & checker.y === props.oldY);
       })
-      redCheckerList.push({ x: props.x, y: props.y })
+      redCheckerList.push({ x: props.x, y: props.y, isKing: props.king })
       setRedCheckerList(redCheckerList);
 
       if (props.jumpedCheckerX !== null && props.jumpedCheckerY !== null) {
@@ -31,7 +31,7 @@ function CheckerHighlight(props) {
       blackCheckerList = blackCheckerList.filter((checker) => {
         return !(checker.x === props.oldX & checker.y === props.oldY);
       })
-      blackCheckerList.push({ x: props.x, y: props.y })
+      blackCheckerList.push({ x: props.x, y: props.y, isKing: props.king })
       setBlackCheckerList(blackCheckerList);
 
       if (props.jumpedCheckerX !== null && props.jumpedCheckerY !== null) {

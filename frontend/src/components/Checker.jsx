@@ -6,6 +6,7 @@ import { v4 } from 'uuid'
 import { CheckerContext } from '../context';
 import { checkIfOutOfBounds, checkIfMoveIsInCheckerList } from '../helpers';
 import CheckerHighlight from './CheckerHighlight';
+import { KING_MOVE_COORDINATES, RED_MOVE_COORDINATES, BLACK_MOVE_COORDINATES } from '../config';
 
 function Checker(props) {
   const [isHighlighted, setIsHighlighted] = useState(false);
@@ -21,7 +22,16 @@ function Checker(props) {
   }
 
   if (isHighlighted) {
-    let moveCoordinates = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
+    let moveCoordinates;
+    if (props.king === true) {
+      moveCoordinates = KING_MOVE_COORDINATES;
+    } else if (props.color === 'red') {
+      moveCoordinates = RED_MOVE_COORDINATES;
+    } else if (props.color === 'black') {
+      moveCoordinates = BLACK_MOVE_COORDINATES;
+    } else {
+      throw `Can't determine move coordinates. Props are ${props}`
+    }
     let randomCoordinate = [_.sample(moveCoordinates)];
 
     return (
@@ -67,6 +77,7 @@ function Checker(props) {
                 y={newY}
                 jumpedCheckerX={jumpedCheckerX}
                 jumpedCheckerY={jumpedCheckerY}
+                king={props.king}
               />
             }
           })
@@ -74,8 +85,12 @@ function Checker(props) {
       </Fragment>
     )
   } else {
+    let kingClass = '';
+    if (props.king) {
+      kingClass = 'king-class'
+    }
     return (
-      <div onClick={handleCheckerClick} className={`checker ${props.color}`} style={style}></div>
+      <div onClick={handleCheckerClick} className={`checker ${props.color} ${kingClass}`} style={style}></div>
     )
   }
 }
