@@ -10,7 +10,7 @@ import { KING_MOVE_COORDINATES, RED_MOVE_COORDINATES, BLACK_MOVE_COORDINATES } f
 
 function Checker(props) {
   const [isHighlighted, setIsHighlighted] = useState(false);
-  let { redCheckerList, blackCheckerList, playerTurn } = useContext(CheckerContext);
+  let { redCheckerList, blackCheckerList, playerTurn, getAvailableMoves } = useContext(CheckerContext);
 
   let style = {
     top: (props.y * 64) + "px",
@@ -21,76 +21,45 @@ function Checker(props) {
     setIsHighlighted(!isHighlighted);
   }
 
-  if (isHighlighted) {
-    let moveCoordinates;
-    if (props.king === true) {
-      moveCoordinates = KING_MOVE_COORDINATES;
-    } else if (props.color === 'red') {
-      moveCoordinates = RED_MOVE_COORDINATES;
-    } else if (props.color === 'black') {
-      moveCoordinates = BLACK_MOVE_COORDINATES;
-    } else {
-      throw `Can't determine move coordinates. Props are ${props}`
-    }
-    let randomCoordinate = [_.sample(moveCoordinates)];
 
+  if (isHighlighted || (props.random && playerTurn === props.color)) {
+    let moveCoordinates = getAvailableMoves(props.x, props.y, props.isKing);
+
+    let kingClass = '';
+    if (props.isKing) {
+      kingClass = 'king-class'
+    }
     return (
       <Fragment>
-        <div onClick={handleCheckerClick} className={`checker ${props.color}`} style={style}></div>
+        <div onClick={handleCheckerClick} className={`checker ${props.color} ${kingClass}`} style={style}></div>
         {
           moveCoordinates.map((moveCoordinate, i) => {
-            let newX = moveCoordinate[0] + props.x;
-            let newY = moveCoordinate[1] + props.y;
-            let jumpedCheckerList;
+            return <CheckerHighlight
+              key={v4()}
+              color={props.color}
+              oldX={props.x}
+              oldY={props.y}
+              x={moveCoordinate[0]}
+              y={moveCoordinate[1]}
+              isKing={props.isKing}
+              random={props.random}
+            />
 
-            if (props.color === 'red') {
-              jumpedCheckerList = blackCheckerList.filter((checker) => {
-                return checker.x === newX & checker.y === newY;
-              });
-            } else if (props.color === 'black') {
-              jumpedCheckerList = redCheckerList.filter((checker) => {
-                return checker.x === newX & checker.y === newY;
-              });
-            }
-
-            let jumpedChecker = jumpedCheckerList.pop()
-            let jumpedCheckerX = null;
-            let jumpedCheckerY = null;
-            if (jumpedChecker !== undefined) {
-              jumpedCheckerX = newX;
-              jumpedCheckerY = newY;
-              newX += moveCoordinate[0];
-              newY += moveCoordinate[1];
-            }
-
-            if (checkIfOutOfBounds(newX, newY) &&
-              checkIfMoveIsInCheckerList(newX, newY, redCheckerList) &&
-              checkIfMoveIsInCheckerList(newX, newY, blackCheckerList)) {
-
-              return <CheckerHighlight
-                key={v4()}
-                random={false}
-                color={props.color}
-                oldX={props.x}
-                oldY={props.y}
-                x={newX}
-                y={newY}
-                jumpedCheckerX={jumpedCheckerX}
-                jumpedCheckerY={jumpedCheckerY}
-                king={props.king}
-              />
-            }
           })
         }
       </Fragment>
     )
   } else {
     let kingClass = '';
-    if (props.king) {
+    if (props.isKing) {
       kingClass = 'king-class'
     }
     return (
-      <div onClick={playerTurn === props.color ? handleCheckerClick : null} className={`checker ${props.color} ${kingClass}`} style={style}></div>
+      <div
+        onClick={playerTurn === props.color ? handleCheckerClick : null}
+        className={`checker ${props.color} ${kingClass}`}
+        style={style}>
+      </div>
     )
   }
 }

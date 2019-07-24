@@ -7,7 +7,7 @@ import { KINGABLE_RED_CHECKER_LIST, KINGABLE_BLACK_CHECKER_LIST } from '../confi
 
 
 function CheckerHighlight(props) {
-  let { redCheckerList, setRedCheckerList, blackCheckerList, setBlackCheckerList, setPlayerTurn, setHasGameEnded } = useContext(CheckerContext);
+  let { redCheckerList, setRedCheckerList, blackCheckerList, setBlackCheckerList, playerTurn, setPlayerTurn, setHasGameEnded } = useContext(CheckerContext);
 
   let style = {
     top: (props.y * 64) + "px",
@@ -22,7 +22,9 @@ function CheckerHighlight(props) {
   }
 
   function handleCheckerClick() {
-    if (props.color === 'red') {
+    console.log('~~~CheckerHighlight.jsx');
+    if (playerTurn === 'red') {
+      setPlayerTurn('black');
       redCheckerList = redCheckerList.filter((checker) => {
         return !(checker.x === props.oldX & checker.y === props.oldY);
       })
@@ -32,7 +34,7 @@ function CheckerHighlight(props) {
 
       let isKing;
       if (isOnKingPosition.length === 0) {
-        isKing = props.king;
+        isKing = props.isKing;
       } else {
         isKing = true;
       }
@@ -49,9 +51,9 @@ function CheckerHighlight(props) {
         })
         setBlackCheckerList(blackCheckerList);
       }
-      setPlayerTurn('black');
       checkIfWonGame();
-    } else if (props.color === 'black') {
+    } else if (playerTurn === 'black') {
+      setPlayerTurn('red');
       blackCheckerList = blackCheckerList.filter((checker) => {
         return !(checker.x === props.oldX & checker.y === props.oldY);
       });
@@ -61,7 +63,7 @@ function CheckerHighlight(props) {
 
       let isKing;
       if (isOnKingPosition.length === 0) {
-        isKing = props.king;
+        isKing = props.isKing;
       } else {
         isKing = true;
       }
@@ -72,13 +74,15 @@ function CheckerHighlight(props) {
       });
       setBlackCheckerList(blackCheckerList);
 
+      console.log(`jumpedCheckerX: ${props.jumpedCheckerX}`);
+      console.log(`jumpedCheckerY: ${props.jumpedCheckerY}`);
       if (props.jumpedCheckerX !== null && props.jumpedCheckerY !== null) {
         redCheckerList = redCheckerList.filter((checker) => {
           return !(checker.x === props.jumpedCheckerX & checker.y === props.jumpedCheckerY);
         })
+
         setRedCheckerList(redCheckerList);
       }
-      setPlayerTurn('red');
       checkIfWonGame();
     } else {
       throw `props.color is invalid colour, should be red or black. Got ${props.color} instead`
@@ -97,6 +101,14 @@ function CheckerHighlight(props) {
 
 CheckerHighlight.propTypes = {
   color: PropTypes.string,
+  random: PropTypes.bool,
+  oldX: PropTypes.number,
+  oldY: PropTypes.number,
+  x: PropTypes.number,
+  y: PropTypes.number,
+  jumpedCheckerX: PropTypes.number,
+  jumpedCheckerY: PropTypes.number,
+  king: PropTypes.bool,
 }
 
 export default CheckerHighlight
