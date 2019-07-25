@@ -21,17 +21,20 @@ function Checker(props) {
     setIsHighlighted(!isHighlighted);
   }
 
+  function addKingStyling() {
+    if (props.isKing) {
+      return 'king-class';
+    }
+    return '';
+  }
+
 
   if (isHighlighted || (props.random && playerTurn === props.color)) {
     let moveCoordinates = getAvailableMoves(props.x, props.y, props.isKing);
 
-    let kingClass = '';
-    if (props.isKing) {
-      kingClass = 'king-class'
-    }
     return (
       <Fragment>
-        <div onClick={handleCheckerClick} className={`checker ${props.color} ${kingClass}`} style={style}></div>
+        <div onClick={handleCheckerClick} className={`checker ${props.color} ${addKingStyling()}`} style={style}></div>
         {
           moveCoordinates.map((moveCoordinate, i) => {
             return <CheckerHighlight
@@ -44,20 +47,15 @@ function Checker(props) {
               isKing={props.isKing}
               random={props.random}
             />
-
           })
         }
       </Fragment>
     )
   } else {
-    let kingClass = '';
-    if (props.isKing) {
-      kingClass = 'king-class'
-    }
     return (
       <div
         onClick={playerTurn === props.color ? handleCheckerClick : null}
-        className={`checker ${props.color} ${kingClass}`}
+        className={`checker ${props.color} ${addKingStyling()}`}
         style={style}>
       </div>
     )

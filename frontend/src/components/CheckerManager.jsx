@@ -1,9 +1,9 @@
 import React, { useState, Fragment } from 'react';
-import { cloneDeep } from 'lodash'
+import { cloneDeep, pullAt } from 'lodash'
 import '../App.css';
 
 import { CheckerProvider } from '../context';
-import { TEST_RED_CHECKER_LIST, TEST_BLACK_CHECKER_LIST, RED_ABOUT_TO_WIN_RED_CHECKERS, RED_ABOUT_TO_WIN_BLACK_CHECKERS } from '../config';
+import { TEST_RED_CHECKER_LIST, TEST_BLACK_CHECKER_LIST, KINGABLE_RED_CHECKER_LIST, KINGABLE_BLACK_CHECKER_LIST } from '../config';
 import { RED_MOVE_COORDINATES, BLACK_MOVE_COORDINATES, KING_MOVE_COORDINATES } from '../config';
 import CheckerBoard from './CheckerBoard';
 import CheckerBoardPattern from './CheckerBoardPattern';
@@ -21,6 +21,14 @@ function CheckerManager() {
   const [blackCheckerList, setBlackCheckerList] = useState(TEST_BLACK_CHECKER_LIST);
   const [playerTurn, setPlayerTurn] = useState('red');
   const [hasGameEnded, setHasGameEnded] = useState(false);
+  let jumpedPieces = [];
+
+  function checkIfWonGame() {
+    if (redCheckerList.length === 0 || blackCheckerList.length === 0) {
+      setPlayerTurn(playerTurn === 'red' ? 'black' : 'red');
+      setHasGameEnded(true);
+    }
+  }
 
   function getMoveCoordinates(isKing) {
     let moveCoordinates;
@@ -45,6 +53,7 @@ function CheckerManager() {
   function getAvailableMoves(x, y, isKing) {
     let moveCoordinates = getMoveCoordinates(isKing);
     let indicesToRemove = [];
+    jumpedPieces = []
     moveCoordinates.forEach((moveCoordinate, index, moveCoordinatesArray) => {
       let newX = moveCoordinate[0] + x;
       let newY = moveCoordinate[1] + y;
@@ -64,6 +73,7 @@ function CheckerManager() {
       if (jumpedChecker !== undefined) {
         newX += moveCoordinate[0];
         newY += moveCoordinate[1];
+        jumpedPieces.push([newX, newY]);
       }
       if (determineIfValidMove(newX, newY)) {
         moveCoordinatesArray[index] = [newX, newY];
@@ -71,14 +81,83 @@ function CheckerManager() {
         indicesToRemove.push(index);
       }
     });
-    indicesToRemove.forEach((index) => {
-      moveCoordinates.splice(index, 1);
-    });
+    pullAt(moveCoordinates, indicesToRemove);
     return moveCoordinates;
   }
 
-  function doMove(checkerColor) {
-    // Pop off of checkerList
+  function isOnKingPosition(newCoordinates) {
+    let kingCoordinates;
+    if (playerTurn === 'red') {
+      kingCoordinates = KINGABLE_RED_CHECKER_LIST;
+    } else if (playerTurn === 'black') {
+      kingCoordinates = KINGABLE_BLACK_CHECKER_LIST;
+    }
+
+    let isOnKingPosition = kingCoordinates.filter((checker) => {
+      return checker.x === newCoordinates[0] & checker.y === newCoordinates[1];
+    })
+
+    if (isOnKingPosition.length === 0) {
+      return false;
+    }
+    return true;
+  }
+
+  function removeCheckerFromBoard() {
+
+  }
+
+  function doMove(oldCoordinates, newCoordinates, isCheckerKing) {
+    let isKingNow = isOnKingPosition(newCoordinates);
+
+    if (playerTurn === 'red') {
+      setPlayerTurn('black');
+      let newRedCheckerListWithoutClickedChecker = cloneDeep(redCheckerList);
+      newRedCheckerListWithoutClickedChecker = newRedCheckerListWithoutClickedChecker.filter((checker) => {
+        return !(checker.x === oldCoordinates[0] & checker.y === oldCoordinates[1]);
+      });
+      newRedCheckerListWithoutClickedChecker.push({
+        x: newCoordinates[0],
+        y: newCoordinates[1],
+        isKing: isKingNow === true ? true : isCheckerKing,
+      });
+      setRedCheckerList(newRedCheckerListWithoutClickedChecker);
+
+      // if (props.jumpedCheckerX !== null && props.jumpedCheckerY !== null) {
+      //   blackCheckerList = blackCheckerList.filter((checker) => {
+      //     return !(checker.x === props.jumpedCheckerX & checker.y === props.jumpedCheckerY);
+      //   })
+      //   setBlackCheckerList(blackCheckerList);
+      // }
+
+
+      // checkIfWonGame();
+    } else if (playerTurn === 'black') {
+      setPlayerTurn('red');
+      let newBlackCheckerListWithoutClickedChecker = cloneDeep(blackCheckerList);
+      newBlackCheckerListWithoutClickedChecker = newBlackCheckerListWithoutClickedChecker.filter((checker) => {
+        return !(checker.x === oldCoordinates[0] & checker.y === oldCoordinates[1]);
+      });
+      newBlackCheckerListWithoutClickedChecker.push({
+        x: newCoordinates[0],
+        y: newCoordinates[1],
+        isKing: isKingNow === true ? true : isCheckerKing,
+      });
+      setBlackCheckerList(newBlackCheckerListWithoutClickedChecker);
+
+      // if (props.jumpedCheckerX !== null && props.jumpedCheckerY !== null) {
+      //   redCheckerList = redCheckerList.filter((checker) => {
+      //     return !(checker.x === props.jumpedCheckerX & checker.y === props.jumpedCheckerY);
+      //   })
+
+      //   setRedCheckerList(redCheckerList);
+      // }
+
+
+      // checkIfWonGame();
+    } else {
+      throw `playerTurn is an invalid turn. Got ${playerTurn} instead.`
+    }
   }
 
   // Gets checker with a legal move.
@@ -105,6 +184,7 @@ function CheckerManager() {
       hasGameEnded: hasGameEnded,
       setHasGameEnded: setHasGameEnded,
       getAvailableMoves: getAvailableMoves,
+      doMove: doMove,
     }}>
       <Fragment>
         <CheckerBoard>
