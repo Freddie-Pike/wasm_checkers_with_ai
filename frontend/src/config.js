@@ -22,7 +22,7 @@ export const TEST_BLACK_CHECKER_LIST = [
     "x": 6, "y": 6, "isKing": false,
   },
   {
-    "x": 7, "y": 7, "isKing": false
+    "x": 7, "y": 7, "isKing": true,
   }
 ]
 
