@@ -3,7 +3,7 @@ import { cloneDeep, pullAt } from 'lodash'
 import '../App.css';
 
 import { CheckerProvider } from '../context';
-import { TEST_RED_CHECKER_LIST, TEST_BLACK_CHECKER_LIST, KINGABLE_RED_CHECKER_LIST, KINGABLE_BLACK_CHECKER_LIST } from '../config';
+import { TEST_RED_CHECKER_LIST, TEST_BLACK_CHECKER_LIST, KINGABLE_RED_CHECKER_LIST, KINGABLE_BLACK_CHECKER_LIST, RED_ABOUT_TO_WIN_RED_CHECKERS, RED_ABOUT_TO_WIN_BLACK_CHECKERS } from '../config';
 import { RED_MOVE_COORDINATES, BLACK_MOVE_COORDINATES, KING_MOVE_COORDINATES } from '../config';
 import CheckerBoard from './CheckerBoard';
 import CheckerBoardPattern from './CheckerBoardPattern';
@@ -17,16 +17,16 @@ import { checkIfOutOfBounds, checkIfMoveIsInCheckerList } from '../helpers';
 // Typed Byte Array. 8 by 8 with each position being a 
 // piece on the board. Make it 32 bits if that's faster.
 function CheckerManager() {
-  const [redCheckerList, setRedCheckerList] = useState(TEST_RED_CHECKER_LIST);
-  const [blackCheckerList, setBlackCheckerList] = useState(TEST_BLACK_CHECKER_LIST);
+  const [redCheckerList, setRedCheckerList] = useState(RED_ABOUT_TO_WIN_RED_CHECKERS);
+  const [blackCheckerList, setBlackCheckerList] = useState(RED_ABOUT_TO_WIN_BLACK_CHECKERS);
   const [playerTurn, setPlayerTurn] = useState('red');
   const [hasGameEnded, setHasGameEnded] = useState(false);
   let jumpedPieces = [];
 
-  function checkIfWonGame() {
-    if (redCheckerList.length === 0 || blackCheckerList.length === 0) {
-      setPlayerTurn(playerTurn === 'red' ? 'black' : 'red');
+  function checkIfWonGame(newRedCheckerList, newBlackCheckerList) {
+    if (newRedCheckerList.length === 0 || newBlackCheckerList.length === 0) {
       setHasGameEnded(true);
+      setPlayerTurn(playerTurn === 'red' ? 'black' : 'red');
     }
   }
 
@@ -155,7 +155,7 @@ function CheckerManager() {
         return !(checker.x === potentialJumpedCoordinate[0] & checker.y === potentialJumpedCoordinate[1]);
       })
       setBlackCheckerList(newBlackCheckerListWithoutClickedChecker);
-      checkIfWonGame();
+      checkIfWonGame(newRedCheckerListWithoutClickedChecker, newBlackCheckerListWithoutClickedChecker);
 
     } else if (playerTurn === 'black') {
       setPlayerTurn('red');
@@ -176,7 +176,7 @@ function CheckerManager() {
         return !(checker.x === potentialJumpedCoordinate[0] & checker.y === potentialJumpedCoordinate[1]);
       })
       setRedCheckerList(newRedCheckerListWithoutClickedChecker);
-      checkIfWonGame();
+      checkIfWonGame(newRedCheckerListWithoutClickedChecker, newBlackCheckerListWithoutClickedChecker);
     } else {
       throw `playerTurn is an invalid turn. Got ${playerTurn} instead.`
     }
@@ -184,40 +184,83 @@ function CheckerManager() {
 
   // Gets checker with a legal move.
   function getLegalCheckerFromList(checkerList) {
-    let hasFoundCheckerWithLegalMove = false;
-    while (hasFoundCheckerWithLegalMove) {
-      checkerList.random(index);
-      availableMoves = checkerList.getAvailableMoves();
+    let hasNotFoundCheckerWithLegalMove = true;
+    let availableMoves;
+    let checker;
+
+    while (hasNotFoundCheckerWithLegalMove) {
+      checker = checkerList[Math.floor(Math.random() * checkerList.length)];
+      availableMoves = getAvailableMoves(checker.x, checker.y, checker.isKing);
       if (availableMoves.length > 0) {
-        hasFoundCheckerWithLegalMove = true;
+        hasNotFoundCheckerWithLegalMove = false;
       }
     }
-    return hasFoundCheckerWithLegalMove;
+    return {
+      availableMoves: availableMoves,
+      checker: checker,
+    };
   }
 
-  return (
-    <CheckerProvider value={{
-      redCheckerList: redCheckerList,
-      setRedCheckerList: setRedCheckerList,
-      blackCheckerList: blackCheckerList,
-      setBlackCheckerList: setBlackCheckerList,
-      playerTurn: playerTurn,
-      setPlayerTurn: setPlayerTurn,
-      hasGameEnded: hasGameEnded,
-      setHasGameEnded: setHasGameEnded,
-      getAvailableMoves: getAvailableMoves,
-      doMove: doMove,
-    }}>
-      <Fragment>
-        <CheckerBoard>
-          <CheckerBoardPattern />
-          <CheckerList color="red" coordinates={redCheckerList} random={false} />
-          <CheckerList color="black" coordinates={blackCheckerList} random={false} />
-        </CheckerBoard>
-        <WinnerComponent />
-      </Fragment>
-    </CheckerProvider>
-  );
+  if (playerTurn === 'black') {
+    if (hasGameEnded) {
+      return (
+        <CheckerProvider value={{
+          redCheckerList: redCheckerList,
+          setRedCheckerList: setRedCheckerList,
+          blackCheckerList: blackCheckerList,
+          setBlackCheckerList: setBlackCheckerList,
+          playerTurn: playerTurn,
+          setPlayerTurn: setPlayerTurn,
+          hasGameEnded: hasGameEnded,
+          setHasGameEnded: setHasGameEnded,
+          getAvailableMoves: getAvailableMoves,
+          doMove: doMove,
+        }}>
+          <Fragment>
+            <CheckerBoard>
+              <CheckerBoardPattern />
+              <CheckerList color="red" coordinates={redCheckerList} random={false} />
+              <CheckerList color="black" coordinates={blackCheckerList} random={false} />
+            </CheckerBoard>
+            <WinnerComponent />
+          </Fragment>
+        </CheckerProvider>
+      );
+    }
+    const { availableMoves, checker } = getLegalCheckerFromList(blackCheckerList);
+    doMove(
+      [checker.x, checker.y],
+      availableMoves[Math.floor(Math.random() * availableMoves.length)],
+      checker.isKing,
+    )
+
+    return null;
+  }
+  else {
+    return (
+      <CheckerProvider value={{
+        redCheckerList: redCheckerList,
+        setRedCheckerList: setRedCheckerList,
+        blackCheckerList: blackCheckerList,
+        setBlackCheckerList: setBlackCheckerList,
+        playerTurn: playerTurn,
+        setPlayerTurn: setPlayerTurn,
+        hasGameEnded: hasGameEnded,
+        setHasGameEnded: setHasGameEnded,
+        getAvailableMoves: getAvailableMoves,
+        doMove: doMove,
+      }}>
+        <Fragment>
+          <CheckerBoard>
+            <CheckerBoardPattern />
+            <CheckerList color="red" coordinates={redCheckerList} random={false} />
+            <CheckerList color="black" coordinates={blackCheckerList} random={false} />
+          </CheckerBoard>
+          <WinnerComponent />
+        </Fragment>
+      </CheckerProvider>
+    );
+  }
 }
 
 export default CheckerManager;
