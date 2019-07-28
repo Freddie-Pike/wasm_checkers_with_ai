@@ -10,7 +10,6 @@ import { KING_MOVE_COORDINATES, RED_MOVE_COORDINATES, BLACK_MOVE_COORDINATES } f
 
 function Checker(props) {
   const [isHighlighted, setIsHighlighted] = useState(false);
-  let { redCheckerList, blackCheckerList, playerTurn, getAvailableMoves } = useContext(CheckerContext);
 
   let style = {
     top: (props.y * 64) + "px",
@@ -29,8 +28,9 @@ function Checker(props) {
   }
 
 
-  if (isHighlighted || (props.random && playerTurn === props.color)) {
-    let moveCoordinates = getAvailableMoves(props.x, props.y, props.isKing);
+  // TODO: Check if 2nd part of if statement is needed anymore.
+  if (isHighlighted || (props.random && window.UIGameState.playerTurn === props.color)) {
+    let moveCoordinates = window.UIGameState.getAvailableMoves(props.x, props.y, props.isKing);
 
     return (
       <Fragment>
@@ -54,7 +54,7 @@ function Checker(props) {
   } else {
     return (
       <div
-        onClick={playerTurn === props.color ? handleCheckerClick : null}
+        onClick={window.UIGameState.playerTurn === props.color ? handleCheckerClick : null}
         className={`checker ${props.color} ${addKingStyling()}`}
         style={style}>
       </div>
