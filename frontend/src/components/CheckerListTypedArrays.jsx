@@ -4,18 +4,21 @@ import Checker from './Checker';
 import { v4 } from 'uuid'
 
 // Random index is: Math.random() * props.coordinates.length)
-function CheckerList(props) {
+function CheckerListTypedArrays(props) {
   function generateCheckersList() {
     let checkersToRender = [];
-    for (let i = 0; i < props.coordinates.length; i++) {
-      let checker = props.coordinates[i];
+    console.log('typed!');
+    for (let i = 0; i < props.coordinates.length; i += 4) {
+      if (props.coordinates[i + 3] === 0) {
+        continue;
+      }
       checkersToRender.push(
         <Checker
           key={v4()}
           color={props.color}
-          x={checker.x}
-          y={checker.y}
-          isKing={checker.isKing}
+          x={props.coordinates[i]}
+          y={props.coordinates[i + 1]}
+          isKing={props.coordinates[i + 2]}
         />
       )
     }
@@ -29,9 +32,9 @@ function CheckerList(props) {
   )
 }
 
-CheckerList.propTypes = {
+CheckerListTypedArrays.propTypes = {
 
 }
 
-export default CheckerList
+export default CheckerListTypedArrays
 

@@ -11,6 +11,9 @@ import {
   RED_ABOUT_TO_WIN_BLACK_CHECKERS,
   BLACK_CHECKER_IN_CORNER_RED_CHECKERS,
   BLACK_CHECKER_IN_CORNER_BLACK_CHECKERS,
+  RED_ABOUT_TO_WIN_RED_CHECKERS_TYPED_ARRAY,
+  RED_ABOUT_TO_WIN_BLACK_CHECKERS_TYPED_ARRAY,
+  TEST_RED_CHECKER_LIST_TYPED_ARRAY,
 } from './config';
 
 const INFINITY = 1000000;
@@ -18,7 +21,7 @@ const NEGATIVE_INFINITY = -1000000;
 
 class CheckerGameState {
   constructor() {
-    this.redCheckerList = RED_ABOUT_TO_WIN_RED_CHECKERS;
+    this.redCheckerList = TEST_RED_CHECKER_LIST_TYPED_ARRAY;
     this.blackCheckerList = RED_ABOUT_TO_WIN_BLACK_CHECKERS;
     this.playerTurn = 'red';
     this.hasGameEnded = false;
@@ -49,7 +52,7 @@ class CheckerGameState {
 
   getMoveCoordinates(isKing) {
     let moveCoordinates;
-    if (isKing === true) {
+    if (isKing) {
       moveCoordinates = cloneDeep(KING_MOVE_COORDINATES);
     } else if (this.playerTurn === 'red') {
       moveCoordinates = cloneDeep(RED_MOVE_COORDINATES);

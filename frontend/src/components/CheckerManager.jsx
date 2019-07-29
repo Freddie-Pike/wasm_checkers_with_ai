@@ -8,6 +8,7 @@ import { RED_MOVE_COORDINATES, BLACK_MOVE_COORDINATES, KING_MOVE_COORDINATES } f
 import CheckerBoard from './CheckerBoard';
 import CheckerBoardPattern from './CheckerBoardPattern';
 import CheckerList from './CheckerList';
+import CheckerListTypedArrays from './CheckerListTypedArrays';
 import WinnerComponent from './WinnerComponent';
 import { checkIfOutOfBounds, checkIfMoveIsInCheckerList } from '../helpers';
 
@@ -77,7 +78,7 @@ function CheckerManager() {
       <Fragment>
         <CheckerBoard>
           <CheckerBoardPattern />
-          <CheckerList color="red" coordinates={redCheckerList} random={false} />
+          <CheckerListTypedArrays color="red" coordinates={redCheckerList} random={false} />
           <CheckerList color="black" coordinates={blackCheckerList} random={false} />
         </CheckerBoard>
         <WinnerComponent />
