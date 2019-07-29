@@ -1,20 +1,38 @@
-import { cloneDeep, pullAt } from 'lodash'
+import { cloneDeep, pullAt, remove } from 'lodash'
 
 import { RED_MOVE_COORDINATES, BLACK_MOVE_COORDINATES, KING_MOVE_COORDINATES } from './config';
 import { checkIfOutOfBounds, checkIfMoveIsInCheckerList } from './helpers';
 import { TEST_RED_CHECKER_LIST, TEST_BLACK_CHECKER_LIST, KINGABLE_RED_CHECKER_LIST, KINGABLE_BLACK_CHECKER_LIST, RED_ABOUT_TO_WIN_RED_CHECKERS, RED_ABOUT_TO_WIN_BLACK_CHECKERS } from './config';
 
+const INFINITY = 1000000;
+const NEGATIVE_INFINITY = -1000000;
+
 class CheckerGameState {
   constructor() {
     this.redCheckerList = RED_ABOUT_TO_WIN_RED_CHECKERS;
     this.blackCheckerList = RED_ABOUT_TO_WIN_BLACK_CHECKERS;
-    this.playerTurn = 'red';
+    this.humanPlayer = 'red';
+    this.playerTurn = 'black';
     this.hasGameEnded = false;
+
+    // UndoMove Move.
+    // For Red
+    this.redJustCompletedMove = null;
+    this.redJustCompletedMoveLastPosition = null;
+    this.blackJustDeletedChecker = null;
+    // For Black
+    this.blackJustCompletedMove = null;
+    this.blackJustCompletedMoveLastPosition = null;
+    this.redJustDeletedChecker = null;
+
+
   }
 
   setGameStatus() {
     if (this.redCheckerList.length === 0 || this.blackCheckerList.length === 0) {
       this.hasGameEnded = true;
+    } else {
+      this.hasGameEnded = false;
     }
   }
 
@@ -125,42 +143,57 @@ class CheckerGameState {
     if (this.playerTurn === 'red') {
       this.playerTurn = 'black';
       let newRedCheckerListWithoutClickedChecker = cloneDeep(this.redCheckerList);
-      newRedCheckerListWithoutClickedChecker = newRedCheckerListWithoutClickedChecker.filter((checker) => {
-        return !(checker.x === oldCoordinates[0] & checker.y === oldCoordinates[1]);
+      let removedChecker = remove(newRedCheckerListWithoutClickedChecker, (checker) => {
+        return checker.x === oldCoordinates[0] & checker.y === oldCoordinates[1];
       });
-      newRedCheckerListWithoutClickedChecker.push({
+      let newRedChecker = {
         x: newCoordinates[0],
         y: newCoordinates[1],
         isKing: isKingNow === true ? true : isCheckerKing,
-      });
+      }
+      this.redJustCompletedMoveLastPosition = removedChecker[0];
+      this.redJustCompletedMove = newRedChecker;
+      newRedCheckerListWithoutClickedChecker.push(newRedChecker);
       this.redCheckerList = newRedCheckerListWithoutClickedChecker;
 
       // Execute Jump.
       let newBlackCheckerListWithoutClickedChecker = cloneDeep(this.blackCheckerList);
-      newBlackCheckerListWithoutClickedChecker = newBlackCheckerListWithoutClickedChecker.filter((checker) => {
-        return !(checker.x === potentialJumpedCoordinate[0] & checker.y === potentialJumpedCoordinate[1]);
+      let removedBlackChecker = remove(newBlackCheckerListWithoutClickedChecker, (checker) => {
+        return checker.x === potentialJumpedCoordinate[0] & checker.y === potentialJumpedCoordinate[1];
       });
-      this.blackCheckerList = newBlackCheckerListWithoutClickedChecker;
-
+      if (removedBlackChecker.length > 0) {
+        this.blackJustDeletedChecker = removedBlackChecker[0];
+        this.blackCheckerList = newBlackCheckerListWithoutClickedChecker;
+      } else {
+        this.blackJustDeletedChecker = null;
+      }
     } else if (this.playerTurn === 'black') {
       this.playerTurn = 'red';
       let newBlackCheckerListWithoutClickedChecker = cloneDeep(this.blackCheckerList);
-      newBlackCheckerListWithoutClickedChecker = newBlackCheckerListWithoutClickedChecker.filter((checker) => {
-        return !(checker.x === oldCoordinates[0] & checker.y === oldCoordinates[1]);
+      let removedChecker = remove(newBlackCheckerListWithoutClickedChecker, (checker) => {
+        return checker.x === oldCoordinates[0] & checker.y === oldCoordinates[1];
       });
-      newBlackCheckerListWithoutClickedChecker.push({
+      let newBlackChecker = {
         x: newCoordinates[0],
         y: newCoordinates[1],
         isKing: isKingNow === true ? true : isCheckerKing,
-      });
+      }
+      this.blackJustCompletedMoveLastPosition = removedChecker[0];
+      this.blackJustCompletedMove = newBlackChecker;
+      newBlackCheckerListWithoutClickedChecker.push(newBlackChecker);
       this.blackCheckerList = newBlackCheckerListWithoutClickedChecker;
 
       // Execute Jump.
       let newRedCheckerListWithoutClickedChecker = cloneDeep(this.redCheckerList);
-      newRedCheckerListWithoutClickedChecker = newRedCheckerListWithoutClickedChecker.filter((checker) => {
-        return !(checker.x === potentialJumpedCoordinate[0] & checker.y === potentialJumpedCoordinate[1]);
-      })
-      this.redCheckerList = newRedCheckerListWithoutClickedChecker;
+      let removedRedChecker = remove(newRedCheckerListWithoutClickedChecker, (checker) => {
+        return checker.x === potentialJumpedCoordinate[0] & checker.y === potentialJumpedCoordinate[1];
+      });
+      if (removedRedChecker.length > 0) {
+        this.redJustDeletedChecker = removedRedChecker[0];
+        this.redCheckerList = newRedCheckerListWithoutClickedChecker;
+      } else {
+        this.redJustDeletedChecker = null;
+      }
     } else {
       throw `playerTurn is an invalid turn. Got ${this.playerTurn} instead.`
     }
@@ -168,7 +201,6 @@ class CheckerGameState {
   }
 
   // Random AI
-
   getLegalCheckerFromList(checkerList) {
     let hasNotFoundCheckerWithLegalMove = true;
     let availableMoves;
@@ -202,25 +234,59 @@ class CheckerGameState {
     )
   }
 
-  undoMove() {
-    alert('hey');
-    // if (playerTurn === 'black') {
-    //   let newRedCheckerListWithoutClickedChecker = cloneDeep(redCheckerList);
-    //   newRedCheckerListWithoutClickedChecker.push(window.justDeleted);
-    //   newRedCheckerListWithoutClickedChecker = newRedCheckerListWithoutClickedChecker.filter((checker) => {
-    //     return !(checker.x === window.justAdded.x & checker.y === window.justAdded.y);
-    //   });
-    //   setRedCheckerList(newRedCheckerListWithoutClickedChecker);
-    //   setPlayerTurn(playerTurn === 'red' ? 'black' : 'red');
-    // } else if (playerTurn === 'red') {
-    //   let newBlackCheckerListWithoutClickedChecker = cloneDeep(blackCheckerList);
-    //   newBlackCheckerListWithoutClickedChecker.push(window.justDeleted);
-    //   newBlackCheckerListWithoutClickedChecker = newBlackCheckerListWithoutClickedChecker.filter((checker) => {
-    //     return !(checker.x === window.justAdded.x & checker.y === window.justAdded.y);
-    //   });
-    //   setBlackCheckerList(newBlackCheckerListWithoutClickedChecker);
-    //   setPlayerTurn(playerTurn === 'red' ? 'black' : 'red');
-    // }
+  undoLastMove() {
+    if (this.playerTurn === 'black') {
+      let newRedCheckerListWithoutClickedChecker = cloneDeep(this.redCheckerList);
+      newRedCheckerListWithoutClickedChecker.push(this.redJustCompletedMoveLastPosition);
+      remove(newRedCheckerListWithoutClickedChecker, (checker) => {
+        return checker.x === this.redJustCompletedMove.x & checker.y === this.redJustCompletedMove.y;
+      });
+      this.redCheckerList = newRedCheckerListWithoutClickedChecker;
+
+      // UndoJump
+      if (this.blackJustDeletedChecker !== null) {
+        this.blackCheckerList.push(this.blackJustDeletedChecker);
+      }
+      this.playerTurn = 'red';
+
+    } else if (this.playerTurn === 'red') {
+      let newBlackCheckerListWithoutClickedChecker = cloneDeep(this.blackCheckerList);
+      newBlackCheckerListWithoutClickedChecker.push(this.blackJustCompletedMoveLastPosition);
+      remove(newBlackCheckerListWithoutClickedChecker, (checker) => {
+        return checker.x === this.blackJustCompletedMove.x & checker.y === this.blackJustCompletedMove.y;
+      });
+      this.blackCheckerList = newBlackCheckerListWithoutClickedChecker;
+
+      // UndoJump
+      if (this.redJustDeletedChecker !== null) {
+        this.redCheckerList.push(this.redJustDeletedChecker);
+      }
+      this.playerTurn = 'black';
+    }
+    this.setGameStatus();
+  }
+
+  eval(player) {
+    let score = 0;
+
+    // TODO: Check if this works.
+    if (this.humanPlayer === player && this.hasGameEnded) {
+      score = INFINITY;
+    } else if (this.hasGameEnded) {
+      score = NEGATIVE_INFINITY;
+    } else {
+      if (this.player === 'red') {
+        score += ((len(this.redCheckerList) - len(this.blackCheckerList)) * 100);
+        score += randint(0, 5);
+      } else if (this.player === 'black') {
+        score += ((len(this.blackCheckerList) - len(this.redCheckerList)) * 100);
+        score += randint(0, 5);
+      } else {
+        throw "Unrecognized player"
+      }
+    }
+
+    return score
   }
 
 

@@ -26,9 +26,7 @@ function CheckerManager() {
     setPlayerTurn(window.UIGameState.playerTurn);
     setRedCheckerList(window.UIGameState.redCheckerList);
     setBlackCheckerList(window.UIGameState.blackCheckerList);
-    if (window.UIGameState.hasGameEnded) {
-      setHasGameEnded(true);
-    }
+    setHasGameEnded(window.UIGameState.hasGameEnded);
   }
 
   function doMove(oldCoordinates, newCoordinates, isCheckerKing) {
@@ -36,17 +34,18 @@ function CheckerManager() {
     updateUI();
   }
 
-  function undoMove() {
-    window.UIGameState.undoMove();
+  function undoLastMove() {
+    window.UIGameState.undoLastMove();
+    updateUI();
   }
 
   // Execute random move if AI.
-  if (!window.UIGameState.hasGameEnded) {
-    if (window.UIGameState.playerTurn === 'black') {
-      window.UIGameState.executeRandomMove();
-      updateUI();
-    }
-  }
+  // if (!window.UIGameState.hasGameEnded) {
+  //   if (window.UIGameState.playerTurn === 'black') {
+  //     window.UIGameState.executeRandomMove();
+  //     updateUI();
+  //   }
+  // }
 
   return (
     <CheckerProvider value={{
@@ -62,7 +61,7 @@ function CheckerManager() {
           <CheckerList color="black" coordinates={blackCheckerList} random={false} />
         </CheckerBoard>
         <WinnerComponent />
-        <button onClick={undoMove}>Undo Last Move</button>
+        <button onClick={undoLastMove}>Undo Last Move</button>
       </Fragment>
     </CheckerProvider >
   );
