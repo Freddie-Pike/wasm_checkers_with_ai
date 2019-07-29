@@ -4,28 +4,20 @@ import PropTypes from 'prop-types'
 import { CheckerContext } from '../context';
 
 function WinnerComponent(props) {
-  let { hasGameEnded, playerTurn } = useContext(CheckerContext);
-
-
+  let { hasGameEnded } = useContext(CheckerContext);
   let style = {
     display: "flex",
+    color: "gold",
     justifyContent: "center",
     width: "300px",
     marginTop: "1rem",
+    marginBottom: "1rem",
   }
 
-  let winningPlayer;
-  if (playerTurn === 'red') {
-    winningPlayer = 'black'
-  } else if (playerTurn === 'black') {
-    winningPlayer = 'red'
-  } else {
-    throw `Invalid playerTurn of ${playerTurn} in WinnerComponent`
-  }
   return (
     <div style={style}>
       {hasGameEnded &&
-        <span>A winner is {hasGameEnded ? winningPlayer : ''}</span>
+        <span>A winner is {hasGameEnded ? window.UIGameState.winner : ''}</span>
       }
     </div>
   )

@@ -13,6 +13,7 @@ class CheckerGameState {
     this.blackCheckerList = RED_ABOUT_TO_WIN_BLACK_CHECKERS;
     this.playerTurn = 'red';
     this.hasGameEnded = false;
+    this.winner = null;
 
     // UndoMove Move.
     // For Red
@@ -30,8 +31,10 @@ class CheckerGameState {
   setGameStatus() {
     if (this.redCheckerList.length === 0 || this.blackCheckerList.length === 0) {
       this.hasGameEnded = true;
+      this.winner = this.playerTurn === 'red' ? 'black' : 'red';
     } else {
       this.hasGameEnded = false;
+      this.winner = null;
     }
   }
 
@@ -294,21 +297,20 @@ class CheckerGameState {
     this.setGameStatus();
   }
 
-  eval(player) {
+  stateEvaluation(player) {
     let score = 0;
 
-    // TODO: Check if this works.
-    if (this.playerTurn === player && this.hasGameEnded) {
+    if (this.winner === player && this.hasGameEnded) {
       score = INFINITY;
     } else if (this.hasGameEnded) {
       score = NEGATIVE_INFINITY;
     } else {
-      if (this.player === 'red') {
-        score += ((len(this.redCheckerList) - len(this.blackCheckerList)) * 100);
-        score += randint(0, 5);
-      } else if (this.player === 'black') {
-        score += ((len(this.blackCheckerList) - len(this.redCheckerList)) * 100);
-        score += randint(0, 5);
+      if (player === 'red') {
+        score += (this.redCheckerList.length - this.blackCheckerList.length) * 100;
+        score += Math.floor(Math.random() * 5) + 1
+      } else if (player === 'black') {
+        score += (this.blackCheckerList.length - this.redCheckerList.length) * 100;
+        score += Math.floor(Math.random() * 5) + 1
       } else {
         throw "Unrecognized player"
       }

@@ -21,6 +21,7 @@ function CheckerManager() {
   const [blackCheckerList, setBlackCheckerList] = useState(window.UIGameState.blackCheckerList);
   const [playerTurn, setPlayerTurn] = useState(window.UIGameState.playerTurn);
   const [hasGameEnded, setHasGameEnded] = useState(window.UIGameState.hasGameEnded);
+  const [positionEvaluation, setPositionEvaluation] = useState(0);
 
   function updateUI() {
     setPlayerTurn(window.UIGameState.playerTurn);
@@ -48,6 +49,10 @@ function CheckerManager() {
     updateUI();
   }
 
+  function evalCurrentPlayer() {
+    setPositionEvaluation(window.UIGameState.stateEvaluation('red'));
+  }
+
   // Execute random move if AI.
   // if (!window.UIGameState.hasGameEnded) {
   //   if (window.UIGameState.playerTurn === 'black') {
@@ -70,8 +75,9 @@ function CheckerManager() {
           <CheckerList color="black" coordinates={blackCheckerList} random={false} />
         </CheckerBoard>
         <WinnerComponent />
-        <button onClick={undoLastMove}>Undo Last Move</button>
-        <button onClick={undoLastRedMove}>Undo Last Red Move</button>
+        {/* <button onClick={undoLastMove}>Undo Last Move</button> */}
+        <button onClick={evalCurrentPlayer}>Update State Evalutation</button>
+        <span>Current eval for {'red'} is {positionEvaluation} </span>
       </Fragment>
     </CheckerProvider >
   );
