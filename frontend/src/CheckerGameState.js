@@ -11,8 +11,7 @@ class CheckerGameState {
   constructor() {
     this.redCheckerList = RED_ABOUT_TO_WIN_RED_CHECKERS;
     this.blackCheckerList = RED_ABOUT_TO_WIN_BLACK_CHECKERS;
-    this.humanPlayer = 'red';
-    this.playerTurn = 'black';
+    this.playerTurn = 'red';
     this.hasGameEnded = false;
 
     // UndoMove Move.
@@ -234,6 +233,37 @@ class CheckerGameState {
     )
   }
 
+  undoMove(justCompletedMove, justCompletedMoveLastPosition, justDeletedMove = null) {
+    if (this.playerTurn === 'black') {
+      let newRedCheckerListWithoutClickedChecker = cloneDeep(this.redCheckerList);
+      newRedCheckerListWithoutClickedChecker.push(justCompletedMoveLastPosition);
+      remove(newRedCheckerListWithoutClickedChecker, (checker) => {
+        return checker.x === justCompletedMove.x & checker.y === justCompletedMove.y;
+      });
+      this.redCheckerList = newRedCheckerListWithoutClickedChecker;
+
+      // UndoJump
+      if (justDeletedMove !== null) {
+        this.blackCheckerList.push(justDeletedMove);
+      }
+
+    } else if (this.playerTurn === 'red') {
+      let newBlackCheckerListWithoutClickedChecker = cloneDeep(this.blackCheckerList);
+      newBlackCheckerListWithoutClickedChecker.push(justCompletedMoveLastPosition);
+      remove(newBlackCheckerListWithoutClickedChecker, (checker) => {
+        return checker.x === justCompletedMove.x & checker.y === justCompletedMove.y;
+      });
+      this.blackCheckerList = newBlackCheckerListWithoutClickedChecker;
+
+      // UndoJump
+      if (justDeletedMove !== null) {
+        this.redCheckerList.push(justDeletedMove);
+      }
+    }
+    this.playerTurn = this.playerTurn === 'red' ? 'black' : 'red';
+    this.setGameStatus();
+  }
+
   undoLastMove() {
     if (this.playerTurn === 'black') {
       let newRedCheckerListWithoutClickedChecker = cloneDeep(this.redCheckerList);
@@ -247,8 +277,6 @@ class CheckerGameState {
       if (this.blackJustDeletedChecker !== null) {
         this.blackCheckerList.push(this.blackJustDeletedChecker);
       }
-      this.playerTurn = 'red';
-
     } else if (this.playerTurn === 'red') {
       let newBlackCheckerListWithoutClickedChecker = cloneDeep(this.blackCheckerList);
       newBlackCheckerListWithoutClickedChecker.push(this.blackJustCompletedMoveLastPosition);
@@ -261,8 +289,8 @@ class CheckerGameState {
       if (this.redJustDeletedChecker !== null) {
         this.redCheckerList.push(this.redJustDeletedChecker);
       }
-      this.playerTurn = 'black';
     }
+    this.playerTurn = this.playerTurn === 'red' ? 'black' : 'red';
     this.setGameStatus();
   }
 
@@ -270,7 +298,7 @@ class CheckerGameState {
     let score = 0;
 
     // TODO: Check if this works.
-    if (this.humanPlayer === player && this.hasGameEnded) {
+    if (this.playerTurn === player && this.hasGameEnded) {
       score = INFINITY;
     } else if (this.hasGameEnded) {
       score = NEGATIVE_INFINITY;
@@ -285,11 +313,8 @@ class CheckerGameState {
         throw "Unrecognized player"
       }
     }
-
     return score
   }
-
-
 }
 
 export default CheckerGameState;

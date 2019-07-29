@@ -34,6 +34,15 @@ function CheckerManager() {
     updateUI();
   }
 
+  function undoLastRedMove() {
+    window.UIGameState.undoMove(
+      window.UIGameState.redJustCompletedMove,
+      window.UIGameState.redJustCompletedMoveLastPosition,
+      window.UIGameState.blackJustDeletedChecker,
+    );
+    updateUI();
+  }
+
   function undoLastMove() {
     window.UIGameState.undoLastMove();
     updateUI();
@@ -62,6 +71,7 @@ function CheckerManager() {
         </CheckerBoard>
         <WinnerComponent />
         <button onClick={undoLastMove}>Undo Last Move</button>
+        <button onClick={undoLastRedMove}>Undo Last Red Move</button>
       </Fragment>
     </CheckerProvider >
   );
