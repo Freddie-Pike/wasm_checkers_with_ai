@@ -38,6 +38,21 @@ export const RED_ABOUT_TO_WIN_BLACK_CHECKERS = [
   },
 ]
 
+export const BLACK_CHECKER_IN_CORNER_RED_CHECKERS = [
+  {
+    "x": 3, "y": 3, "isKing": true,
+  }
+]
+
+export const BLACK_CHECKER_IN_CORNER_BLACK_CHECKERS = [
+  {
+    "x": 6, "y": 6, "isKing": true,
+  },
+  {
+    "x": 2, "y": 0, "isKing": true,
+  },
+]
+
 
 // Game logic.
 export const KINGABLE_RED_CHECKER_LIST = [

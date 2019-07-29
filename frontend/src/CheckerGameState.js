@@ -2,7 +2,16 @@ import { cloneDeep, pullAt, remove } from 'lodash'
 
 import { RED_MOVE_COORDINATES, BLACK_MOVE_COORDINATES, KING_MOVE_COORDINATES } from './config';
 import { checkIfOutOfBounds, checkIfMoveIsInCheckerList } from './helpers';
-import { TEST_RED_CHECKER_LIST, TEST_BLACK_CHECKER_LIST, KINGABLE_RED_CHECKER_LIST, KINGABLE_BLACK_CHECKER_LIST, RED_ABOUT_TO_WIN_RED_CHECKERS, RED_ABOUT_TO_WIN_BLACK_CHECKERS } from './config';
+import {
+  TEST_RED_CHECKER_LIST,
+  TEST_BLACK_CHECKER_LIST,
+  KINGABLE_RED_CHECKER_LIST,
+  KINGABLE_BLACK_CHECKER_LIST,
+  RED_ABOUT_TO_WIN_RED_CHECKERS,
+  RED_ABOUT_TO_WIN_BLACK_CHECKERS,
+  BLACK_CHECKER_IN_CORNER_RED_CHECKERS,
+  BLACK_CHECKER_IN_CORNER_BLACK_CHECKERS,
+} from './config';
 
 const INFINITY = 1000000;
 const NEGATIVE_INFINITY = -1000000;
@@ -11,7 +20,7 @@ class CheckerGameState {
   constructor() {
     this.redCheckerList = RED_ABOUT_TO_WIN_RED_CHECKERS;
     this.blackCheckerList = RED_ABOUT_TO_WIN_BLACK_CHECKERS;
-    this.playerTurn = 'red';
+    this.playerTurn = 'black';
     this.hasGameEnded = false;
     this.winner = null;
 
