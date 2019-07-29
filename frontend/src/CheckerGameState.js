@@ -20,7 +20,7 @@ class CheckerGameState {
   constructor() {
     this.redCheckerList = RED_ABOUT_TO_WIN_RED_CHECKERS;
     this.blackCheckerList = RED_ABOUT_TO_WIN_BLACK_CHECKERS;
-    this.playerTurn = 'black';
+    this.playerTurn = 'red';
     this.hasGameEnded = false;
     this.winner = null;
 

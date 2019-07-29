@@ -6,31 +6,17 @@ const NEGATIVE_INFINITY = -1000000;
 class AlphaBeta {
   constructor(maxDepth, player) {
     this.maxDepth = maxDepth;
+    this.currentMaxDepth = maxDepth; // Maybe unneeded?
     this.player = player;
     this.gameState = cloneDeep(window.UIGameState);
-    this.bestMove = -1;
-    this.currentMaxDepth = maxDepth;
-    this.tempBestMoveRed = -1;
-    this.tempBestMoveBlack = -1;
-    this.alphaBetaValues = []
-    this.bestMoveVal = -1;
     this.timeStart = 0; // Not implemented yet, but should probably be later.
-    this.reset();
     this.tempBestMove = 0;
     this.tempBestMoveSelectedPiece = 0;
-
-    // Should be red or black.
-    this.otherPlayer = null;
+    this.reset();
   }
 
   reset() {
     this.gameState = cloneDeep(window.UIGameState);
-    this.tempBestMoveRed = -1
-    this.tempBestMoveBlack = -1
-    this.bestMove = -1
-    this.bestMoveVal = NEGATIVE_INFINITY;
-    this.alphaBetaValues = []
-
     this.tempBestMove = null;
     this.tempBestMoveSelectedPiece = null;
   }
