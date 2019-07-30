@@ -7,7 +7,6 @@ import { v4 } from 'uuid'
 function CheckerListTypedArrays(props) {
   function generateCheckersList() {
     let checkersToRender = [];
-    console.log('typed!');
     for (let i = 0; i < props.coordinates.length; i += 4) {
       if (props.coordinates[i + 3] === 0) {
         continue;

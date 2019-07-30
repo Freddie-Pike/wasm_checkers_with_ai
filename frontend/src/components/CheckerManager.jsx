@@ -50,19 +50,18 @@ function CheckerManager() {
   }
 
   // Execute random move if AI.
-
-  // if (!window.UIGameState.hasGameEnded) {
-  //   if (window.UIGameState.playerTurn === 'black') {
-  //     let getAlphaBetaMove = window.AlphaBeta.getMove();
-  //     console.log(`getAlphaBetaMove is ${getAlphaBetaMove}`);
-  //     window.UIGameState.doMove(
-  //       [window.AlphaBeta.tempBestMoveSelectedPiece.x, window.AlphaBeta.tempBestMoveSelectedPiece.y],
-  //       [window.AlphaBeta.tempBestMove.x, window.AlphaBeta.tempBestMove.y],
-  //       window.AlphaBeta.tempBestMoveSelectedPiece.isKing,
-  //     );
-  //     updateUI();
-  //   }
-  // }
+  if (!window.UIGameState.hasGameEnded) {
+    if (window.UIGameState.playerTurn === 'black') {
+      let getAlphaBetaMove = window.AlphaBeta.getMove();
+      console.log(`getAlphaBetaMove is ${getAlphaBetaMove}`);
+      window.UIGameState.doMove(
+        [window.AlphaBeta.tempBestMoveSelectedPiece.x, window.AlphaBeta.tempBestMoveSelectedPiece.y],
+        [window.AlphaBeta.tempBestMove.x, window.AlphaBeta.tempBestMove.y],
+        window.AlphaBeta.tempBestMoveSelectedPiece.isKing,
+      );
+      updateUI();
+    }
+  }
 
   return (
     <CheckerProvider value={{

@@ -40,8 +40,12 @@ class AlphaBeta {
     }
 
     if (state.playerTurn === 'red') {
-      for (let i = 0; i < state.redCheckerList.length; i++) {
-        let checker = state.redCheckerList[i];
+      for (let i = 0; i < state.redCheckerList.length; i += 4) {
+        let checker = {
+          x: state.redCheckerList[i],
+          y: state.redCheckerList[i + 1],
+          isKing: state.redCheckerList[i + 2],
+        };
         let availableMoves = state.getAvailableMoves(checker.x, checker.y, checker.isKing);
         for (let j = 0; j < availableMoves.length; j++) {
           let availableMove = availableMoves[j]
@@ -57,6 +61,7 @@ class AlphaBeta {
             redJustCompletedMoveLastPosition,
             blackJustDeletedChecker,
           );
+
           if (max_player && value > alpha) {
             if (depth == 0) {
               this.tempBestMove = redJustCompletedMove;
@@ -78,8 +83,12 @@ class AlphaBeta {
         return beta;
       }
     } else if (state.playerTurn === 'black') {
-      for (let i = 0; i < state.blackCheckerList.length; i++) {
-        let checker = state.blackCheckerList[i];
+      for (let i = 0; i < state.blackCheckerList.length; i += 4) {
+        let checker = {
+          x: state.blackCheckerList[i],
+          y: state.blackCheckerList[i + 1],
+          isKing: state.blackCheckerList[i + 2],
+        };
         let availableMoves = state.getAvailableMoves(checker.x, checker.y, checker.isKing);
         for (let j = 0; j < availableMoves.length; j++) {
           let availableMove = availableMoves[j]
