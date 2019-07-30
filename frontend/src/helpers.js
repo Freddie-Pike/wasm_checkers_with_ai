@@ -18,3 +18,11 @@ export function checkIfMoveIsInCheckerList(x, y, checkerList) {
   }
   return true;
 }
+
+export function checkIfMoveIsInTypedArrayCheckerList(x, y, checkerList) {
+  let foundChecker = window.UIGameState.findChecker(x, y, checkerList);
+  if (foundChecker !== null) {
+    return false
+  }
+  return true;
+}
