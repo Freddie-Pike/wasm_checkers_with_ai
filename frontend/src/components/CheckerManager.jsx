@@ -8,6 +8,7 @@ import { RED_MOVE_COORDINATES, BLACK_MOVE_COORDINATES, KING_MOVE_COORDINATES } f
 import CheckerBoard from './CheckerBoard';
 import CheckerBoardPattern from './CheckerBoardPattern';
 import CheckerList from './CheckerList';
+import CheckerListTypedArrays from './CheckerListTypedArrays';
 import WinnerComponent from './WinnerComponent';
 import { checkIfOutOfBounds, checkIfMoveIsInCheckerList } from '../helpers';
 
@@ -44,11 +45,6 @@ function CheckerManager() {
     updateUI();
   }
 
-  function undoLastMove() {
-    window.UIGameState.undoLastMove();
-    updateUI();
-  }
-
   function evalCurrentPlayer() {
     setPositionEvaluation(window.UIGameState.stateEvaluation('red'));
   }
@@ -56,7 +52,10 @@ function CheckerManager() {
   // Execute random move if AI.
   if (!window.UIGameState.hasGameEnded) {
     if (window.UIGameState.playerTurn === 'black') {
+
+      // TODO: Add in performance analysis. Use performance.now().
       let getAlphaBetaMove = window.AlphaBeta.getMove();
+
       console.log(`getAlphaBetaMove is ${getAlphaBetaMove}`);
       window.UIGameState.doMove(
         [window.AlphaBeta.tempBestMoveSelectedPiece.x, window.AlphaBeta.tempBestMoveSelectedPiece.y],
@@ -77,11 +76,11 @@ function CheckerManager() {
       <Fragment>
         <CheckerBoard>
           <CheckerBoardPattern />
-          <CheckerList color="red" coordinates={redCheckerList} random={false} />
-          <CheckerList color="black" coordinates={blackCheckerList} random={false} />
+          <CheckerListTypedArrays color="red" coordinates={redCheckerList} random={false} />
+          <CheckerListTypedArrays color="black" coordinates={blackCheckerList} random={false} />
         </CheckerBoard>
         <WinnerComponent />
-        {/* <button onClick={undoLastMove}>Undo Last Move</button> */}
+        {/* <button onClick={undoLastRedMove}>Undo Last Move</button> */}
         <button onClick={evalCurrentPlayer}>Update State Evalutation</button>
         <span>Current eval for {'red'} is {positionEvaluation} </span>
       </Fragment>

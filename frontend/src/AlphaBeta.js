@@ -9,7 +9,6 @@ class AlphaBeta {
     this.currentMaxDepth = maxDepth; // Maybe unneeded?
     this.player = player;
     this.gameState = cloneDeep(window.UIGameState);
-    this.timeStart = 0; // Not implemented yet, but should probably be later.
     this.tempBestMove = 0;
     this.tempBestMoveSelectedPiece = 0;
     this.reset();
@@ -23,6 +22,9 @@ class AlphaBeta {
 
   getMove() {
     this.reset();
+    // NOTE: alphaBetaValue returned currently isn't used. Can probably remove
+    // the return value once I determine the return values are the same once
+    // in Rust the version once I implement it.
     let alphaBetaValue = this.alpha_beta_algorithm(this.gameState, 0, NEGATIVE_INFINITY, INFINITY, true);
     return this.tempBestMove;
   }
@@ -31,7 +33,7 @@ class AlphaBeta {
     if (this.currentMaxDepth > 0 && depth >= this.currentMaxDepth) {
       return true;
     }
-    return state.hasGameEnded === true; // Change function to return value.
+    return state.hasGameEnded === true;
   }
 
   alpha_beta_algorithm(state, depth, alpha, beta, max_player) {
@@ -40,8 +42,12 @@ class AlphaBeta {
     }
 
     if (state.playerTurn === 'red') {
-      for (let i = 0; i < state.redCheckerList.length; i++) {
-        let checker = state.redCheckerList[i];
+      for (let i = 0; i < state.redCheckerList.length; i += 4) {
+        let checker = {
+          x: state.redCheckerList[i],
+          y: state.redCheckerList[i + 1],
+          isKing: state.redCheckerList[i + 2],
+        };
         let availableMoves = state.getAvailableMoves(checker.x, checker.y, checker.isKing);
         for (let j = 0; j < availableMoves.length; j++) {
           let availableMove = availableMoves[j]
@@ -57,6 +63,7 @@ class AlphaBeta {
             redJustCompletedMoveLastPosition,
             blackJustDeletedChecker,
           );
+
           if (max_player && value > alpha) {
             if (depth == 0) {
               this.tempBestMove = redJustCompletedMove;
@@ -78,8 +85,12 @@ class AlphaBeta {
         return beta;
       }
     } else if (state.playerTurn === 'black') {
-      for (let i = 0; i < state.blackCheckerList.length; i++) {
-        let checker = state.blackCheckerList[i];
+      for (let i = 0; i < state.blackCheckerList.length; i += 4) {
+        let checker = {
+          x: state.blackCheckerList[i],
+          y: state.blackCheckerList[i + 1],
+          isKing: state.blackCheckerList[i + 2],
+        };
         let availableMoves = state.getAvailableMoves(checker.x, checker.y, checker.isKing);
         for (let j = 0; j < availableMoves.length; j++) {
           let availableMove = availableMoves[j]

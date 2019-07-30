@@ -101,3 +101,50 @@ export const BLACK_MOVE_COORDINATES = [
   [1, 1],
   [-1, 1],
 ]
+
+
+// Typed Array versions:
+// Each typed array has 4 values for each piece on the board. They represent:
+// 0 --> x position. Values from 0-7.
+// 1 --> y position. Values from 0-7.
+// 2 --> is the checker a king. Values from 0-1.
+// 3 --> is active. If 0 the checker won't appear on the board. Values from 0-1.
+export const RED_ABOUT_TO_WIN_RED_CHECKERS_TYPED_ARRAY = new Int8Array(
+  RED_ABOUT_TO_WIN_RED_CHECKERS.length * 4
+);
+for (let i = 0; i < RED_ABOUT_TO_WIN_RED_CHECKERS_TYPED_ARRAY.length; i += 4) {
+  RED_ABOUT_TO_WIN_RED_CHECKERS_TYPED_ARRAY[i] = RED_ABOUT_TO_WIN_RED_CHECKERS[i / 4].x;
+  RED_ABOUT_TO_WIN_RED_CHECKERS_TYPED_ARRAY[i + 1] = RED_ABOUT_TO_WIN_RED_CHECKERS[i / 4].y;
+  RED_ABOUT_TO_WIN_RED_CHECKERS_TYPED_ARRAY[i + 2] = RED_ABOUT_TO_WIN_RED_CHECKERS[i / 4].isKing;
+  RED_ABOUT_TO_WIN_RED_CHECKERS_TYPED_ARRAY[i + 3] = 1;
+}
+
+export const RED_ABOUT_TO_WIN_BLACK_CHECKERS_TYPED_ARRAY = new Int8Array(
+  RED_ABOUT_TO_WIN_BLACK_CHECKERS.length * 4
+);
+for (let i = 0; i < RED_ABOUT_TO_WIN_BLACK_CHECKERS_TYPED_ARRAY.length; i += 4) {
+  RED_ABOUT_TO_WIN_BLACK_CHECKERS_TYPED_ARRAY[i] = RED_ABOUT_TO_WIN_BLACK_CHECKERS[i / 4].x;
+  RED_ABOUT_TO_WIN_BLACK_CHECKERS_TYPED_ARRAY[i + 1] = RED_ABOUT_TO_WIN_BLACK_CHECKERS[i / 4].y;
+  RED_ABOUT_TO_WIN_BLACK_CHECKERS_TYPED_ARRAY[i + 2] = RED_ABOUT_TO_WIN_BLACK_CHECKERS[i / 4].isKing;
+  RED_ABOUT_TO_WIN_BLACK_CHECKERS_TYPED_ARRAY[i + 3] = 1;
+}
+
+export const TEST_RED_CHECKER_LIST_TYPED_ARRAY = new Int8Array(
+  TEST_RED_CHECKER_LIST.length * 4
+);
+for (let i = 0; i < TEST_RED_CHECKER_LIST_TYPED_ARRAY.length; i += 4) {
+  TEST_RED_CHECKER_LIST_TYPED_ARRAY[i] = TEST_RED_CHECKER_LIST[i / 4].x;
+  TEST_RED_CHECKER_LIST_TYPED_ARRAY[i + 1] = TEST_RED_CHECKER_LIST[i / 4].y;
+  TEST_RED_CHECKER_LIST_TYPED_ARRAY[i + 2] = TEST_RED_CHECKER_LIST[i / 4].isKing;
+  TEST_RED_CHECKER_LIST_TYPED_ARRAY[i + 3] = 1;
+}
+
+export const TEST_BLACK_CHECKER_LIST_TYPED_ARRAY = new Int8Array(
+  TEST_BLACK_CHECKER_LIST.length * 4
+);
+for (let i = 0; i < TEST_BLACK_CHECKER_LIST_TYPED_ARRAY.length; i += 4) {
+  TEST_BLACK_CHECKER_LIST_TYPED_ARRAY[i] = TEST_BLACK_CHECKER_LIST[i / 4].x;
+  TEST_BLACK_CHECKER_LIST_TYPED_ARRAY[i + 1] = TEST_BLACK_CHECKER_LIST[i / 4].y;
+  TEST_BLACK_CHECKER_LIST_TYPED_ARRAY[i + 2] = TEST_BLACK_CHECKER_LIST[i / 4].isKing;
+  TEST_BLACK_CHECKER_LIST_TYPED_ARRAY[i + 3] = 1;
+}
