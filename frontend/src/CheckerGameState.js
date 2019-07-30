@@ -22,8 +22,8 @@ const NEGATIVE_INFINITY = -1000000;
 
 class CheckerGameState {
   constructor() {
-    this.redCheckerList = TEST_RED_CHECKER_LIST_TYPED_ARRAY;
-    this.blackCheckerList = TEST_BLACK_CHECKER_LIST_TYPED_ARRAY;
+    this.redCheckerList = RED_ABOUT_TO_WIN_RED_CHECKERS_TYPED_ARRAY;
+    this.blackCheckerList = RED_ABOUT_TO_WIN_BLACK_CHECKERS_TYPED_ARRAY;
     this.playerTurn = 'red';
     this.hasGameEnded = false;
     this.winner = null;
@@ -42,7 +42,7 @@ class CheckerGameState {
   }
 
   setGameStatus() {
-    if (this.redCheckerList.length === 0 || this.blackCheckerList.length === 0) {
+    if (this.getActiveCheckers(this.redCheckerList) === 0 || this.getActiveCheckers(this.blackCheckerList) === 0) {
       this.hasGameEnded = true;
       this.winner = this.playerTurn === 'red' ? 'black' : 'red';
     } else {
