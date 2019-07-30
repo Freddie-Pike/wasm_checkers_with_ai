@@ -45,11 +45,6 @@ function CheckerManager() {
     updateUI();
   }
 
-  function undoLastMove() {
-    window.UIGameState.undoLastMove();
-    updateUI();
-  }
-
   function evalCurrentPlayer() {
     setPositionEvaluation(window.UIGameState.stateEvaluation('red'));
   }
@@ -83,7 +78,7 @@ function CheckerManager() {
           <CheckerListTypedArrays color="black" coordinates={blackCheckerList} random={false} />
         </CheckerBoard>
         <WinnerComponent />
-        {/* <button onClick={undoLastMove}>Undo Last Move</button> */}
+        {/* <button onClick={undoLastRedMove}>Undo Last Move</button> */}
         <button onClick={evalCurrentPlayer}>Update State Evalutation</button>
         <span>Current eval for {'red'} is {positionEvaluation} </span>
       </Fragment>
