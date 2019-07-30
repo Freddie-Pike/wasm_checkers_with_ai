@@ -9,7 +9,6 @@ class AlphaBeta {
     this.currentMaxDepth = maxDepth; // Maybe unneeded?
     this.player = player;
     this.gameState = cloneDeep(window.UIGameState);
-    this.timeStart = 0; // Not implemented yet, but should probably be later.
     this.tempBestMove = 0;
     this.tempBestMoveSelectedPiece = 0;
     this.reset();
@@ -23,6 +22,9 @@ class AlphaBeta {
 
   getMove() {
     this.reset();
+    // NOTE: alphaBetaValue returned currently isn't used. Can probably remove
+    // the return value once I determine the return values are the same once
+    // in Rust the version once I implement it.
     let alphaBetaValue = this.alpha_beta_algorithm(this.gameState, 0, NEGATIVE_INFINITY, INFINITY, true);
     return this.tempBestMove;
   }
@@ -31,7 +33,7 @@ class AlphaBeta {
     if (this.currentMaxDepth > 0 && depth >= this.currentMaxDepth) {
       return true;
     }
-    return state.hasGameEnded === true; // Change function to return value.
+    return state.hasGameEnded === true;
   }
 
   alpha_beta_algorithm(state, depth, alpha, beta, max_player) {

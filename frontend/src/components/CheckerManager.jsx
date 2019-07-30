@@ -52,7 +52,10 @@ function CheckerManager() {
   // Execute random move if AI.
   if (!window.UIGameState.hasGameEnded) {
     if (window.UIGameState.playerTurn === 'black') {
+
+      // TODO: Add in performance analysis. Use performance.now().
       let getAlphaBetaMove = window.AlphaBeta.getMove();
+
       console.log(`getAlphaBetaMove is ${getAlphaBetaMove}`);
       window.UIGameState.doMove(
         [window.AlphaBeta.tempBestMoveSelectedPiece.x, window.AlphaBeta.tempBestMoveSelectedPiece.y],

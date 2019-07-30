@@ -53,6 +53,7 @@ class CheckerGameState {
 
   getMoveCoordinates(isKing) {
     let moveCoordinates;
+    // NOTE: I need to cloneDeep the coordinates so I don't modify the import.
     if (isKing) {
       moveCoordinates = cloneDeep(KING_MOVE_COORDINATES);
     } else if (this.playerTurn === 'red') {
@@ -65,12 +66,6 @@ class CheckerGameState {
     return moveCoordinates;
   }
 
-  determineIfValidMove(x, y) {
-    return checkIfOutOfBounds(x, y) &&
-      checkIfMoveIsInCheckerList(x, y, this.redCheckerList) &&
-      checkIfMoveIsInCheckerList(x, y, this.blackCheckerList);
-  }
-
   determineIfValidMoveInTypedArray(x, y) {
     return checkIfOutOfBounds(x, y) &&
       checkIfMoveIsInTypedArrayCheckerList(x, y, this.redCheckerList) &&
@@ -80,6 +75,8 @@ class CheckerGameState {
   getAvailableMoves(x, y, isKing) {
     let moveCoordinates = this.getMoveCoordinates(isKing);
     let indicesToRemove = [];
+    // TODO: Instead of for each, use a normal for loop so it converts over 
+    // to Rust better.
     moveCoordinates.forEach((moveCoordinate, index, moveCoordinatesArray) => {
       let newX = moveCoordinate[0] + x;
       let newY = moveCoordinate[1] + y;
@@ -113,6 +110,7 @@ class CheckerGameState {
       kingCoordinates = KINGABLE_BLACK_CHECKER_LIST;
     }
 
+    // Create function to filter array.
     let isOnKingPosition = kingCoordinates.filter((checker) => {
       return checker.x === newCoordinates[0] & checker.y === newCoordinates[1];
     })
@@ -148,6 +146,8 @@ class CheckerGameState {
     return [action_direction_row, action_direction_col];
   }
 
+  // TODO: I don't think I need to use cloneDeep in this function anymore, 
+  // should check this and replace it.
   doMove(oldCoordinates, newCoordinates, isCheckerKing) {
     let isKingNow = this.isOnKingPosition(newCoordinates);
     let actionCoordinates = this.getActionFromCoordinates(oldCoordinates, newCoordinates);
@@ -240,7 +240,7 @@ class CheckerGameState {
     this.setGameStatus();
   }
 
-  // Random AI
+  // NOTE: Used for random AI move.
   getLegalCheckerFromList(checkerList) {
     let hasNotFoundCheckerWithLegalMove = true;
     let availableMoves;
@@ -353,6 +353,7 @@ class CheckerGameState {
   }
 
   // TypedArray functions
+  // TODO: The below functions should go in a separate function.
   getActiveCheckers(checkerList) {
     let activeCounter = 0;
     for (let i = 0; i < checkerList.length; i += 4) {
