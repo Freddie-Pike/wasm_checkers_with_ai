@@ -183,16 +183,18 @@ class CheckerGameState {
       this.redCheckerList = newRedCheckerListWithoutClickedChecker;
 
       // Execute Jump.
-      // let newBlackCheckerListWithoutClickedChecker = cloneDeep(this.blackCheckerList);
-      // let removedBlackChecker = remove(newBlackCheckerListWithoutClickedChecker, (checker) => {
-      //   return checker.x === potentialJumpedCoordinate[0] & checker.y === potentialJumpedCoordinate[1];
-      // });
-      // if (removedBlackChecker.length > 0) {
-      //   this.blackJustDeletedChecker = removedBlackChecker[0];
-      //   this.blackCheckerList = newBlackCheckerListWithoutClickedChecker;
-      // } else {
-      //   this.blackJustDeletedChecker = null;
-      // }
+      let newBlackCheckerListWithoutClickedChecker = cloneDeep(this.blackCheckerList);
+      let removedBlackChecker = this.removeChecker(
+        potentialJumpedCoordinate[0],
+        potentialJumpedCoordinate[1],
+        newBlackCheckerListWithoutClickedChecker,
+      );
+      if (removedBlackChecker !== null) {
+        this.blackJustDeletedChecker = removedBlackChecker;
+        this.blackCheckerList = newBlackCheckerListWithoutClickedChecker;
+      } else {
+        this.blackJustDeletedChecker = null;
+      }
     } else if (this.playerTurn === 'black') {
       this.playerTurn = 'red';
       let newBlackCheckerListWithoutClickedChecker = cloneDeep(this.blackCheckerList);
@@ -220,16 +222,18 @@ class CheckerGameState {
       this.blackCheckerList = newBlackCheckerListWithoutClickedChecker;
 
       // Execute Jump.
-      // let newRedCheckerListWithoutClickedChecker = cloneDeep(this.redCheckerList);
-      // let removedRedChecker = remove(newRedCheckerListWithoutClickedChecker, (checker) => {
-      //   return checker.x === potentialJumpedCoordinate[0] & checker.y === potentialJumpedCoordinate[1];
-      // });
-      // if (removedRedChecker.length > 0) {
-      //   this.redJustDeletedChecker = removedRedChecker[0];
-      //   this.redCheckerList = newRedCheckerListWithoutClickedChecker;
-      // } else {
-      //   this.redJustDeletedChecker = null;
-      // }
+      let newRedCheckerListWithoutClickedChecker = cloneDeep(this.redCheckerList);
+      let removedRedChecker = this.removeChecker(
+        potentialJumpedCoordinate[0],
+        potentialJumpedCoordinate[1],
+        newRedCheckerListWithoutClickedChecker,
+      );
+      if (removedRedChecker !== null) {
+        this.redJustDeletedChecker = removedRedChecker;
+        this.redCheckerList = newRedCheckerListWithoutClickedChecker;
+      } else {
+        this.redJustDeletedChecker = null;
+      }
     } else {
       throw `playerTurn is an invalid turn. Got ${this.playerTurn} instead.`
     }
@@ -363,24 +367,26 @@ class CheckerGameState {
     return activeCounter;
   }
 
-  removeChecker(x, y, checkerList) {
-    let didUpdate = false;
+  removeChecker(x, y, checkerList, shouldFindRemovedCheckers = false) {
     let removedChecker;
     for (let i = 0; i < checkerList.length; i += 4) {
       if (checkerList[i] === x && checkerList[i + 1] === y) {
-        checkerList[i + 3] = 0;
-
-        removedChecker = {
-          x: checkerList[i],
-          y: checkerList[i + 1],
-          isKing: checkerList[i + 2],
+        if (shouldFindRemovedCheckers) {
+          checkerList[i + 3] = 0;
+          removedChecker = {
+            x: checkerList[i],
+            y: checkerList[i + 1],
+            isKing: checkerList[i + 2],
+          }
+        } else if (checkerList[i + 3] === 1) {
+          checkerList[i + 3] = 0;
+          removedChecker = {
+            x: checkerList[i],
+            y: checkerList[i + 1],
+            isKing: checkerList[i + 2],
+          }
         }
-        didUpdate = true;
-        break;
       }
-    }
-    if (!didUpdate) {
-      throw "Didn't remove checker in removeChecker"
     }
     return removedChecker;
   }
@@ -410,18 +416,23 @@ class CheckerGameState {
     return updatedChecker;
   }
 
-  findChecker(x, y, checkerList) {
-    let didUpdate = false;
+  findChecker(x, y, checkerList, shouldFindRemovedCheckers = false) {
     let foundChecker = null;
     for (let i = 0; i < checkerList.length; i += 4) {
       if (checkerList[i] === x && checkerList[i + 1] === y) {
-        foundChecker = {
-          x: checkerList[i],
-          y: checkerList[i + 1],
-          isKing: checkerList[i + 2],
+        if (shouldFindRemovedCheckers) {
+          foundChecker = {
+            x: checkerList[i],
+            y: checkerList[i + 1],
+            isKing: checkerList[i + 2],
+          }
+        } else if (checkerList[i + 3] === 1) {
+          foundChecker = {
+            x: checkerList[i],
+            y: checkerList[i + 1],
+            isKing: checkerList[i + 2],
+          }
         }
-        didUpdate = true;
-        break;
       }
     }
     return foundChecker;
