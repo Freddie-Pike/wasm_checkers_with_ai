@@ -4,11 +4,10 @@ import CheckerGameState from './CheckerGameState';
 import AlphaBeta from './AlphaBeta';
 
 window.UIGameState = new CheckerGameState();
+// TODO: Currently searching using a tree depth of 3, there's some instability with 
+// depths greater than 3 that should be fixed.
 window.AlphaBeta = new AlphaBeta(3, 'black');
 
-// TODO: Convert CheckerList values(x & y) into 
-// Typed Byte Array. 8 by 8 with each position being a 
-// piece on the board. Make it 32 bits if that's faster.
 function App() {
   return (
     <div className="main-container">
