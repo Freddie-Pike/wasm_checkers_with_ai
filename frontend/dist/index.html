@@ -2,17 +2,18 @@
 <html>
 
 <head>
-  <title>The Minimal React Webpack Babel Setup</title>
+  <title>Checkers Game Application</title>
 </head>
 
 <script type="module">
-  import init, { add, multiply } from './without/without_a_bundler.js';
+  import init, { add, multiply, renderCheckerGameState } from './without/without_a_bundler.js';
 
   async function run() {
     await init();
     const result = add(1, 2);
     window.add = add;
     window.multiply = multiply;
+    window.renderCheckerGameState = renderCheckerGameState;
     console.log(`1 + 2 = ${result}`);
   }
   run();
