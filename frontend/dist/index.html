@@ -13,7 +13,24 @@
     const result = add(1, 2);
     window.add = add;
     window.multiply = multiply;
+
     window.renderCheckerGameState = renderCheckerGameState;
+    window.rust_checker = new window.renderCheckerGameState();
+    window.rust_checker.testy_test();
+
+    // Memory testing.
+    // const request = await fetch(rustLocation);
+    // const wasmBuffer = await request.arrayBuffer();
+    // const wasm = await WebAssembly.instantiate(wasmBuffer, importObj);
+    // const { memory } = wasm.instance.exports;
+    // memory.grow(Math.ceil(imgSize / (1 << 16)) * 2);
+    // window.red_checker_list_raw = new Uint8ClampedArray(
+    //   memory.buffer,
+    //   window.rust_checker.red_checker_list_offset(),
+    //   window.rust_checker.red_checker_list_size()
+    // );
+
+
     console.log(`1 + 2 = ${result}`);
   }
   run();

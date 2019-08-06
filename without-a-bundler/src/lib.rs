@@ -109,19 +109,26 @@ impl CheckerGameState {
   pub fn testy_test(&self) {
     // let src_img: &[u32];
     let red_checker_list_workable: &mut [u8];
+    let black_checker_list_workable: &mut [u8];
     unsafe { 
       red_checker_list_workable = from_raw_parts_mut::<u8>(
         self.red_checker_list_offset as *mut u8, self.red_checker_list_size
       );
+      black_checker_list_workable = from_raw_parts_mut::<u8>(
+        self.black_checker_list_offset as *mut u8, self.black_checker_list_size
+      );
     }
-    console_log_str("abc.");
-    for i in 0..self.red_checker_list_size { 
-      console_log_str("red_checker_list_workable before assignment.");
-      console_log_u8(red_checker_list_workable[0]);
-      red_checker_list_workable[i] = 55;
-      console_log_str("red_checker_list_workable after assignment.");
-      console_log_u8(red_checker_list_workable[0]);
-    }
+    console_log_str("setting up red checker list.");
+    red_checker_list_workable[0] = 3;
+    red_checker_list_workable[1] = 3;
+    red_checker_list_workable[2] = 1;
+    red_checker_list_workable[3] = 1;
+
+    console_log_str("setting up black checker list.");
+    black_checker_list_workable[0] = 2;
+    black_checker_list_workable[1] = 2;
+    black_checker_list_workable[2] = 1;
+    black_checker_list_workable[3] = 1;
   }
 
 
@@ -138,9 +145,8 @@ impl CheckerGameState {
 
 #[wasm_bindgen]
 pub fn renderCheckerGameState() -> CheckerGameState {
-  let mut texture1 = vec![1, 2, 3];
-  // texture1.push(1);
-  let texture2 = Vec::new();
-  CheckerGameState::new(&texture1, &texture2)
+  let mut red_checker_list_vector = vec![1, 2, 3, 4];
+  let mut black_checker_list_vector = vec![1, 2, 3, 4];
+  CheckerGameState::new(&red_checker_list_vector, &black_checker_list_vector)
 }
 
