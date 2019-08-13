@@ -341,10 +341,8 @@ class CheckerGameState {
     } else {
       if (player === 'red') {
         score += (this.getActiveCheckers(this.redCheckerList) - this.getActiveCheckers(this.blackCheckerList)) * 100;
-        score += Math.floor(Math.random() * 5) + 1
       } else if (player === 'black') {
         score += (this.getActiveCheckers(this.blackCheckerList) - this.getActiveCheckers(this.redCheckerList)) * 100;
-        score += Math.floor(Math.random() * 5) + 1
       } else {
         throw "Unrecognized player"
       }
