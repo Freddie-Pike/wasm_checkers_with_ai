@@ -6,17 +6,15 @@
 </head>
 
 <script type="module">
-  import init, { add, multiply, renderCheckerGameState } from './without/without_a_bundler.js';
+  import init, { AlphaBeta, CheckerGameState } from './without/without_a_bundler.js';
 
   async function run() {
     await init();
-    const result = add(1, 2);
-    window.add = add;
-    window.multiply = multiply;
+    debugger;
 
-    window.renderCheckerGameState = renderCheckerGameState;
-    window.rust_checker = new window.renderCheckerGameState();
-    window.rust_checker.testy_test();
+    window.RustAlphaBeta = AlphaBeta;
+    window.rustCheckerGameStateInstance = new CheckerGameState();
+    window.rustAlphaBetaInstance = new RustAlphaBeta(3, "black");
 
     // Memory testing.
     // const request = await fetch(rustLocation);
