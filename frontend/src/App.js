@@ -10,9 +10,7 @@ window.AlphaBeta = new AlphaBeta(3, 'black');
 
 function App() {
   return (
-    <div className="main-container">
-      <CheckerManager />
-    </div>
+    <CheckerManager />
   );
 }
 

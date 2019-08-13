@@ -19,6 +19,26 @@ pub fn main() -> Result<(), JsValue> {
 }
 
 #[wasm_bindgen]
+extern "C" {
+    // Use `js_namespace` here to bind `console.log(..)` instead of just
+    // `log(..)`
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+
+    // The `console.log` is quite polymorphic, so we can bind it with multiple
+    // signatures. Note that we need to use `js_name` to ensure we always call
+    // `log` in JS.
+    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    fn log_u32(a: u32);
+
+    // Multiple arguments too!
+    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    fn log_many(a: &str, b: &str);
+}
+
+
+
+#[wasm_bindgen]
 #[derive(Clone,Debug)]
 pub struct CheckerGameState {
   red_checker_list: Vec<isize>,
@@ -53,9 +73,9 @@ impl CheckerGameState {
   #[wasm_bindgen(constructor)]
   pub fn new() -> CheckerGameState {
     CheckerGameState {
-      red_checker_list: [3, 3, 1, 1].to_vec(),
+      red_checker_list: [4, 4, 1, 1].to_vec(),
       black_checker_list: [2, 2, 1, 1].to_vec(),
-      player_turn: "black".to_string(), 
+      player_turn: "red".to_string(), 
       has_game_ended: false,
       winner: "".to_string(),
       // Undo Move Variable
@@ -102,6 +122,10 @@ impl CheckerGameState {
 
   pub fn get_red_checker_list(&self) -> Vec<isize> {
     self.red_checker_list.clone()
+  }
+
+  pub fn get_black_checker_list(&self) -> Vec<isize> {
+    self.black_checker_list.clone()
   }
 
   // uses function getActiveCheckers.
@@ -343,6 +367,7 @@ impl CheckerGameState {
     let king_coordinates;
     let mut i: usize = 0;
 
+    log("Before self.player_turn!");
     if (self.player_turn == "red") {
       king_coordinates = &self.KINGABLE_RED_CHECKER_LIST;
     } else {
@@ -390,6 +415,8 @@ impl CheckerGameState {
 
     potential_jumped_coordinate.to_vec();
 
+    log("main if statement!");
+    log(&self.player_turn.to_string());
     if (self.player_turn == "red") {
       self.player_turn = "black".to_string();
       // remove_red_checker_list()
@@ -842,12 +869,21 @@ impl AlphaBeta {
     }
   }
 
+  pub fn get_gameState(&self) -> CheckerGameState {
+    self.gameState.clone()
+  }
+
   pub fn get_tempBestMove(&self) -> Vec<isize> {
     self.tempBestMove.clone()
   }
 
   pub fn get_tempBestMoveSelectedPiece(&self) -> Vec<isize> {
     self.tempBestMoveSelectedPiece.clone()
+  }
+
+  pub fn do_move(&mut self, old_coordinates: Vec<isize>, new_coordinates: Vec<isize>, is_checker_king: isize) {
+    log("Before do_move!");
+    self.gameState.do_move(old_coordinates, new_coordinates, is_checker_king);
   }
 
   pub fn reset(&mut self) {

@@ -32,6 +32,14 @@ function CheckerManager() {
   }
 
   function doMove(oldCoordinates, newCoordinates, isCheckerKing) {
+    // debugger;
+    let isKingNumber;
+    if (isCheckerKing) {
+      isKingNumber = 1;
+    } else {
+      isKingNumber = 0;
+    }
+    window.rustAlphaBetaInstance.do_move(oldCoordinates, newCoordinates, isKingNumber);
     window.UIGameState.doMove(oldCoordinates, newCoordinates, isCheckerKing);
     updateUI();
   }
@@ -54,16 +62,64 @@ function CheckerManager() {
     if (window.UIGameState.playerTurn === 'black') {
 
       // TODO: Add in performance analysis. Use performance.now().
-      let getAlphaBetaMove = window.AlphaBeta.getMove();
-
-      console.log(`getAlphaBetaMove is ${getAlphaBetaMove}`);
+      // Rust Alphabeta.
+      let start = performance.now();
+      let rustGetAlphaBetaMove = window.rustAlphaBetaInstance.getMove();
+      console.log(`rustGetAlphaBetaMove is ${rustGetAlphaBetaMove}`);
+      let rustTempBestMoveSelectedPiece = window.rustAlphaBetaInstance.get_tempBestMoveSelectedPiece();
+      let rustTempBestMove = window.rustAlphaBetaInstance.get_tempBestMove();
+      let rustIsKing = false;
+      if (rustTempBestMoveSelectedPiece[2] == 1) {
+        rustIsKing = true;
+      }
       window.UIGameState.doMove(
-        [window.AlphaBeta.tempBestMoveSelectedPiece.x, window.AlphaBeta.tempBestMoveSelectedPiece.y],
-        [window.AlphaBeta.tempBestMove.x, window.AlphaBeta.tempBestMove.y],
-        window.AlphaBeta.tempBestMoveSelectedPiece.isKing,
+        [rustTempBestMoveSelectedPiece[0], rustTempBestMoveSelectedPiece[1]],
+        [rustTempBestMove[0], rustTempBestMove[1]],
+        rustIsKing,
       );
+      window.rustAlphaBetaInstance.do_move(
+        [rustTempBestMoveSelectedPiece[0], rustTempBestMoveSelectedPiece[1]],
+        [rustTempBestMove[0], rustTempBestMove[1]],
+        rustTempBestMoveSelectedPiece[2],
+      );
+      let elpased = performance.now() - start;
+      console.log('rust move generation time: ', elpased);
+
+      // Javascript Alphabeta
+      // let start = performance.now();
+      // let getAlphaBetaMove = window.AlphaBeta.getMove();
+      // console.log(`getAlphaBetaMove is ${getAlphaBetaMove}`);
+      // let isKingNumber;
+      // if (window.AlphaBeta.tempBestMoveSelectedPiece.isKing) {
+      //   isKingNumber = 1;
+      // } else {
+      //   isKingNumber = 0;
+      // }
+      // window.UIGameState.doMove(
+      //   [window.AlphaBeta.tempBestMoveSelectedPiece.x, window.AlphaBeta.tempBestMoveSelectedPiece.y],
+      //   [window.AlphaBeta.tempBestMove.x, window.AlphaBeta.tempBestMove.y],
+      //   window.AlphaBeta.tempBestMoveSelectedPiece.isKing,
+      // );
+      // window.rustAlphaBetaInstance.do_move(
+      //   [window.AlphaBeta.tempBestMoveSelectedPiece.x, window.AlphaBeta.tempBestMoveSelectedPiece.y],
+      //   [window.AlphaBeta.tempBestMove.x, window.AlphaBeta.tempBestMove.y],
+      //   isKingNumber,
+      // );
+      // let elpased = performance.now() - start;
+      // console.log('JavaScript move generation time: ', elpased);
+
+
       updateUI();
     }
+  }
+
+  let style = {
+    top: "1rem",
+    right: "1rem",
+    height: "24rem",
+    width: "8rem",
+    backgroundColor: "red",
+    position: "absolute",
   }
 
   return (
@@ -73,16 +129,19 @@ function CheckerManager() {
       hasGameEnded: hasGameEnded,
       doMove: doMove,
     }}>
-      <Fragment>
-        <CheckerBoard>
-          <CheckerBoardPattern />
-          <CheckerListTypedArrays color="red" coordinates={redCheckerList} random={false} />
-          <CheckerListTypedArrays color="black" coordinates={blackCheckerList} random={false} />
-        </CheckerBoard>
-        <WinnerComponent />
-        {/* <button onClick={undoLastRedMove}>Undo Last Move</button> */}
-        <button onClick={evalCurrentPlayer}>Update State Evalutation</button>
-        <span>Current eval for {'red'} is {positionEvaluation} </span>
+      <Fragment >
+        <div className="main-container">
+          <CheckerBoard>
+            <CheckerBoardPattern />
+            <CheckerListTypedArrays color="red" coordinates={redCheckerList} random={false} />
+            <CheckerListTypedArrays color="black" coordinates={blackCheckerList} random={false} />
+          </CheckerBoard>
+          <WinnerComponent />
+          {/* <button onClick={undoLastRedMove}>Undo Last Move</button> */}
+          <button onClick={evalCurrentPlayer}>Update State Evalutation</button>
+          <span>Current eval for {'red'} is {positionEvaluation} </span>
+        </div>
+        <div style={style}></div>
       </Fragment>
     </CheckerProvider >
   );

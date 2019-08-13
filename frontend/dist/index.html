@@ -10,10 +10,8 @@
 
   async function run() {
     await init();
-    debugger;
 
     window.RustAlphaBeta = AlphaBeta;
-    window.rustCheckerGameStateInstance = new CheckerGameState();
     window.rustAlphaBetaInstance = new RustAlphaBeta(3, "black");
 
     // Memory testing.
@@ -29,7 +27,7 @@
     // );
 
 
-    console.log(`1 + 2 = ${result}`);
+    // console.log(`1 + 2 = ${result}`);
   }
   run();
 </script>
