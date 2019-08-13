@@ -73,9 +73,9 @@ impl CheckerGameState {
   #[wasm_bindgen(constructor)]
   pub fn new() -> CheckerGameState {
     CheckerGameState {
-      red_checker_list: [4, 4, 1, 1].to_vec(),
+      red_checker_list: [3, 3, 1, 1].to_vec(),
       black_checker_list: [2, 2, 1, 1].to_vec(),
-      player_turn: "red".to_string(), 
+      player_turn: "black".to_string(), 
       has_game_ended: false,
       winner: "".to_string(),
       // Undo Move Variable
@@ -367,7 +367,6 @@ impl CheckerGameState {
     let king_coordinates;
     let mut i: usize = 0;
 
-    log("Before self.player_turn!");
     if (self.player_turn == "red") {
       king_coordinates = &self.KINGABLE_RED_CHECKER_LIST;
     } else {
@@ -415,8 +414,6 @@ impl CheckerGameState {
 
     potential_jumped_coordinate.to_vec();
 
-    log("main if statement!");
-    log(&self.player_turn.to_string());
     if (self.player_turn == "red") {
       self.player_turn = "black".to_string();
       // remove_red_checker_list()
@@ -882,7 +879,6 @@ impl AlphaBeta {
   }
 
   pub fn do_move(&mut self, old_coordinates: Vec<isize>, new_coordinates: Vec<isize>, is_checker_king: isize) {
-    log("Before do_move!");
     self.gameState.do_move(old_coordinates, new_coordinates, is_checker_king);
   }
 
